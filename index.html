@@ -23,10 +23,7 @@
         overflow: hidden; 
         background-color: var(--bg-main);
         font-family: 'Inter', system-ui, sans-serif;
-        /* Evita el menú contextual al mantener presionado */
         -webkit-tap-highlight-color: transparent;
-        user-select: none;
-        -webkit-user-select: none;
     }
 
     .container { 
@@ -71,7 +68,7 @@
         position: relative; 
     }
 
-    .cell-container { width: 100%; height: 100%; padding: 2px; }
+    .cell-container { width: 100%; height: 100%; padding: 2px; cursor: pointer; }
 
     .hour-col { 
         width: 60px; background: #0f172a; font-weight: 700; text-align: center; 
@@ -94,75 +91,81 @@
         background: rgba(59, 130, 246, 0.1); border-radius: 2px; margin-left: 2px;
     }
 
-    /* --- HOVER CARD (DESKTOP) --- */
+    /* --- MODAL (HOVER CARD RECONVERTIDO) --- */
     .hover-card {
-        visibility: hidden; opacity: 0; width: 220px;
+        display: none; /* Cambiado de visibility a display para manejo con JS */
+        opacity: 0; width: 220px;
         background: var(--glass); backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.2);
-        color: white; border-radius: 8px; padding: 12px;
+        color: white; border-radius: 8px; padding: 35px 12px 15px 12px;
         position: absolute; z-index: 9999; 
         top: 0; left: 105%;
         box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        pointer-events: none;
-        transition: opacity 0.2s, transform 0.2s;
+        transition: opacity 0.2s;
+        text-align: center;
+        pointer-events: auto; /* Permitir clics dentro */
+    }
+
+    /* Clase activa para mostrar el modal */
+    .cell-container.active .hover-card {
+        display: block;
+        opacity: 1;
     }
 
     tr:nth-last-child(-n+2) .hover-card { top: auto; bottom: 0; }
     td:nth-last-child(-n+2) .hover-card { left: auto; right: 105%; }
 
-    .cell-container:hover .hover-card { visibility: visible; opacity: 1; }
+    .hover-card b { 
+        font-size: 11px; display: block; line-height: 1.2; 
+        color: var(--accent); margin-bottom: 6px; text-transform: uppercase;
+    }
+    
+    .hover-card small { 
+        font-size: 10px; display: block; line-height: 1.3; color: var(--text-muted);
+    }
 
-    /* --- MODAL CENTRAL (MÓVIL) --- */
+    .close-hint {
+        position: absolute; top: 8px; right: 8px;
+        font-size: 14px; font-weight: bold; color: var(--accent);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%; width: 22px; height: 22px;
+        line-height: 20px; text-align: center; cursor: pointer;
+    }
+
+    /* Overlay oscuro cuando hay un modal abierto */
+    .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0;
+        width: 100vw; height: 100vh; background: rgba(0,0,0,0.7);
+        z-index: 9990;
+    }
+    body.modal-open .modal-overlay { display: block; }
+
     @media (max-width: 768px) {
-        .cell-container:active::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 9998;
-        }
-
         .hover-card {
-            position: fixed;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 85vw;
-            max-width: 300px;
-            height: auto;
-            text-align: center;
+            position: fixed; top: 50% !important; left: 50% !important;
+            transform: translate(-50%, -50%);
+            width: 85vw; max-width: 300px;
             border: 1px solid var(--accent);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-            pointer-events: none;
-            right: auto !important;
-            bottom: auto !important;
         }
-
-        .cell-container:active .hover-card {
-            visibility: visible;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            z-index: 9999;
-        }
-
-        .hover-card b { font-size: 13px !important; display: block; margin-bottom: 4px; color: var(--accent); }
-        .hover-card small { font-size: 11px !important; display: block; line-height: 1.2; }
     }
 
     .lab-tag {
         background: #f59e0b; color: #000; padding: 2px 8px; border-radius: 4px;
-        font-weight: 800; font-size: 9px; margin-top: 10px; display: inline-block;
+        font-weight: 800; font-size: 9px; margin-top: 12px; display: inline-block;
     }
 </style>
 </head>
-<body ontouchstart="">
+<body>
+
+<div class="modal-overlay" id="overlay"></div>
 
 <div class="container">
     <h1>Horario Electrónica Bloque 5</h1>
-    <p class="subtitle">Gestión 2026-1 • Mantén presionado para detalles</p>
+    <p class="subtitle">Gestión 2026-1 • Toca una celda para ver detalles</p>
 
     <div class="table-wrapper">
-        <table id="scheduleTable">
+        <table>
             <thead>
                 <tr>
                     <th class="hour-col">HORA</th>
@@ -183,28 +186,6 @@
         "Viernes": { 6: "ROS-MIG", 8: "ROS-MIG-AND", 10: "ROS-MIG", 12: "ROS-AND-CAM", 14: "AND-CAM-MAT", 16: "AND-CAM", 18: "MAT-MIG", 20: "MAT-CAM" },
         "Sábado": { 6: "ROS-MAT", 8: "ROS-MAT-MIG", 10: "ROS-MAT-MIG", 12: "ROS-MAT-MIG", 14: "ROS-MAT-MIG", 16: "ROS-MAT", 18: "MAT-MIG", 20: "MAT-CAM" }
     };
-
-    function shortM(name) {
-        return name
-            .replace(/CIRCUITOS/g, "C.")
-            .replace(/DIGITALES/g, "DIG.")
-            .replace(/MICROCONTROLADORES/g, "MICRO.")
-            .replace(/APL /g, "A. ")
-            .replace(/ELECTRÓNICOS/g, "ELEC.")
-            .replace(/ELÉCTRICOS/g, "ELÉC.")
-            .replace(/INSTRUMENTACIÓN/g, "INSTRUM.")
-            .replace(/INDUSTRIAL/g, "IND.")
-            .replace(/SISTEMAS/g, "SIST.")
-            .replace(/AUTOMÁTICOS/g, "AUTO.")
-            .replace(/MECATRÓNICOS/g, "MECAT.")
-            .replace(/FABRICACIÓN/g, "FAB.")
-            .replace(/SOSTENIBLE/g, "SOST.")
-            .replace(/COMUNICACIONES/g, "COMUN.")
-            .replace(/CONMUTACION/g, "CONMUT.")
-            .replace(/SERVOMECANISMOS/g, "SERVO.")
-            .replace(/DISEÑO ELEM MAQ/g, "DIS. ELEM. MAQ.")
-            .replace(/INTRO /g, "I. ");
-    }
 
     const materiasData = [
         { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
@@ -267,6 +248,28 @@
 
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
+    function shortM(name) {
+        return name
+            .replace(/CIRCUITOS/g, "C.")
+            .replace(/DIGITALES/g, "DIG.")
+            .replace(/MICROCONTROLADORES/g, "MICRO.")
+            .replace(/APL /g, "A. ")
+            .replace(/ELECTRÓNICOS/g, "ELEC.")
+            .replace(/ELÉCTRICOS/g, "ELÉC.")
+            .replace(/INSTRUMENTACIÓN/g, "INSTRUM.")
+            .replace(/INDUSTRIAL/g, "IND.")
+            .replace(/SISTEMAS/g, "SIST.")
+            .replace(/AUTOMÁTICOS/g, "AUTO.")
+            .replace(/MECATRÓNICOS/g, "MECAT.")
+            .replace(/FABRICACIÓN/g, "FAB.")
+            .replace(/SOSTENIBLE/g, "SOST.")
+            .replace(/COMUNICACIONES/g, "COMUN.")
+            .replace(/CONMUTACION/g, "CONMUT.")
+            .replace(/SERVOMECANISMOS/g, "SERVO.")
+            .replace(/DISEÑO ELEM MAQ/g, "DIS. ELEM. MAQ.")
+            .replace(/INTRO /g, "I. ");
+    }
+
     function initTable() {
         const tbody = document.getElementById('scheduleBody');
         for (let h = 6; h <= 20; h += 2) {
@@ -280,9 +283,10 @@
                 const cell = document.createElement('td');
                 const lab = laboratoristas[dia][h] || "---";
                 cell.innerHTML = `
-                    <div class="cell-container" id="cell-${dia}-${h}">
-                        <div class="cell-content"></div>
+                    <div class="cell-container" onclick="toggleModal(this, event)">
+                        <div class="cell-content" id="content-${dia}-${h}"></div>
                         <div class="hover-card">
+                            <span class="close-hint" onclick="closeAllModals(event)">×</span> 
                             <div id="info-${dia}-${h}"><small>Libre</small></div>
                             <div class="lab-tag">🛠️ LAB: ${lab}</div>
                         </div>
@@ -297,23 +301,49 @@
     function renderMaterias() {
         materiasData.forEach(m => {
             const blockStart = m.start % 2 === 0 ? m.start : m.start - 1;
-            const container = document.querySelector(`#cell-${m.dia}-${blockStart} .cell-content`);
-            const infoHover = document.querySelector(`#info-${m.dia}-${blockStart}`);
+            const container = document.getElementById(`content-${m.dia}-${blockStart}`);
+            const infoHover = document.getElementById(`info-${m.dia}-${blockStart}`);
             
-            if (container) {
-                if (container.children.length === 0) infoHover.innerHTML = "";
+            if (container && infoHover) {
+                if (infoHover.innerHTML.includes("Libre")) infoHover.innerHTML = "";
+
                 const block = document.createElement('div');
                 block.className = 'materia-block';
                 block.innerHTML = `<span>${shortM(m.m)}</span> <span class="aula-badge">${m.a}</span>`;
                 container.appendChild(block);
 
                 const detail = document.createElement('div');
-                detail.style.marginBottom = "5px";
-                detail.innerHTML = `<b style="color:#3b82f6; font-size:10px">${m.m}</b><small>${m.d}</small>`;
+                detail.style.marginBottom = "10px";
+                detail.innerHTML = `<b>${m.m}</b><small>${m.d}</small>`;
                 infoHover.appendChild(detail);
             }
         });
     }
+
+    // --- LÓGICA DE MODAL ---
+    function toggleModal(element, event) {
+        event.stopPropagation();
+        const isActive = element.classList.contains('active');
+        closeAllModals();
+        if (!isActive) {
+            element.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+    }
+
+    function closeAllModals(event) {
+        if (event) event.stopPropagation();
+        const modals = document.querySelectorAll('.cell-container.active');
+        modals.forEach(m => m.classList.remove('active'));
+        document.body.classList.remove('modal-open');
+    }
+
+    // Cerrar al hacer clic en el overlay o fuera
+    document.getElementById('overlay').onclick = closeAllModals;
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.hover-card')) closeAllModals();
+    });
+
     initTable();
 </script>
 </body>
