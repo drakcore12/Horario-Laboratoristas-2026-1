@@ -12,13 +12,12 @@
         --text-muted: #94a3b8;
         --accent: #3b82f6;
         --border: #1e293b;
-        --glass: rgba(15, 23, 42, 0.98);
     }
 
     * { box-sizing: border-box; }
 
     html, body { 
-        height: 100vh; width: 100vw;
+        height: 100%; width: 100vw;
         margin: 0; padding: 0; 
         overflow: hidden; 
         background-color: var(--bg-main);
@@ -27,20 +26,20 @@
     }
 
     .container { 
-        height: 100vh; width: 100vw;
+        height: 100vh;
         display: flex; flex-direction: column; 
-        padding: 5px 10px;
+        padding: 4px 8px;
     }
 
     h1 { 
-        text-align: center; font-weight: 800; font-size: 1.1rem; margin: 0;
+        text-align: center; font-weight: 800; font-size: 0.95rem; margin: 2px 0;
         background: linear-gradient(to right, #60a5fa, #3b82f6);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
     p.subtitle { 
-        text-align: center; margin: 0 0 5px 0; color: var(--text-muted); 
-        font-size: 0.7rem; 
+        text-align: center; margin: 0 0 4px 0; color: var(--text-muted); 
+        font-size: 0.65rem; 
     }
 
     .table-wrapper {
@@ -49,116 +48,89 @@
         border-radius: 6px;
         border: 1px solid var(--border);
         overflow: auto;
-        -webkit-overflow-scrolling: touch;
+        display: flex; /* Ayuda a que la tabla se ajuste */
     }
 
-    table { width: 100%; height: 100%; min-width: 800px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+    table { 
+        width: 100%; 
+        min-width: 700px; 
+        border-collapse: separate; 
+        border-spacing: 0; 
+        table-layout: fixed;
+    }
 
     th { 
-        background: #1e293b; color: var(--text-muted); height: 35px;
-        font-size: 10px; text-transform: uppercase;
+        background: #1e293b; color: var(--text-muted); 
+        height: 28px; /* Reducido */
+        font-size: 9px; text-transform: uppercase;
         border-bottom: 1px solid var(--border);
         position: sticky; top: 0; z-index: 20;
     }
 
     td { 
-        height: calc(100% / 8); 
-        border: 0.2px solid var(--border); 
+        height: 38px; /* Altura fija pequeña para asegurar que quepan las 8 filas */
+        border: 0.1px solid var(--border); 
         vertical-align: top; 
         position: relative; 
     }
 
-    .cell-container { width: 100%; height: 100%; padding: 3px; cursor: pointer; transition: background 0.2s; }
-    .cell-container:hover { background: rgba(59, 130, 246, 0.05); }
+    .cell-container { width: 100%; height: 100%; padding: 2px; cursor: pointer; }
 
     .hour-col { 
-        width: 70px; background: #0f172a; font-weight: 700; text-align: center; 
-        font-size: 10px; color: var(--accent); border-right: 1.5px solid var(--border);
+        width: 55px; /* Más angosto */
+        background: #0f172a; font-weight: 700; text-align: center; 
+        font-size: 9px; color: var(--accent); border-right: 1.5px solid var(--border);
         vertical-align: middle;
         position: sticky; left: 0; z-index: 10;
     }
 
-    .cell-content { display: flex; flex-direction: column; gap: 3px; height: 100%; overflow: hidden; }
+    .cell-content { display: flex; flex-direction: column; gap: 1px; height: 100%; overflow: hidden; }
 
     .materia-block {
         display: flex; justify-content: space-between; align-items: center;
-        padding-left: 4px; border-left: 3px solid var(--accent);
-        font-size: 9px; font-weight: 500; color: var(--text-main); 
+        padding-left: 2px; border-left: 2px solid var(--accent);
+        font-size: 8.5px; font-weight: 500; color: var(--text-main); 
         white-space: nowrap; overflow: hidden;
+        line-height: 1.1;
     }
 
     .aula-badge { 
-        font-size: 8px; color: var(--accent); padding: 1px 3px;
-        background: rgba(59, 130, 246, 0.15); border-radius: 3px; margin-left: 3px;
+        font-size: 7.5px; color: var(--accent); padding: 0px 2px;
+        background: rgba(59, 130, 246, 0.15); border-radius: 2px; margin-left: 2px;
     }
 
-    /* --- NUEVO MODAL CENTRALIZADO --- */
+    /* MODAL */
     .modal-overlay {
         display: none; position: fixed; top: 0; left: 0;
         width: 100vw; height: 100vh; background: rgba(0,0,0,0.85);
         z-index: 9990; backdrop-filter: blur(4px);
     }
-
     .custom-modal {
-        display: none;
-        position: fixed; top: 50%; left: 50%;
+        display: none; position: fixed; top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        width: 90vw; max-width: 450px; /* Tamaño aumentado */
-        background: var(--bg-card);
-        border: 2px solid var(--accent);
-        border-radius: 12px;
-        padding: 40px 20px 25px 20px;
-        z-index: 9999;
-        box-shadow: 0 0 40px rgba(0,0,0,0.8);
-        text-align: center;
-        animation: modalScale 0.2s ease-out;
+        width: 85vw; max-width: 400px;
+        background: var(--bg-card); border: 2px solid var(--accent);
+        border-radius: 12px; padding: 30px 15px 20px 15px;
+        z-index: 9999; text-align: center;
     }
-
-    @keyframes modalScale {
-        from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
-
-    body.modal-open .modal-overlay,
-    body.modal-open .custom-modal { display: block; }
-
-    .custom-modal b { 
-        font-size: 1.2rem; display: block; line-height: 1.4; 
-        color: var(--accent); margin-bottom: 12px; text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .custom-modal small { 
-        font-size: 1rem; display: block; line-height: 1.5; color: var(--text-main);
-        margin-bottom: 15px;
-    }
-
-    .close-btn {
-        position: absolute; top: 12px; right: 12px;
-        font-size: 24px; font-weight: bold; color: var(--text-muted);
-        cursor: pointer; padding: 5px; width: 35px; height: 35px;
-    }
-    .close-btn:hover { color: #ff4444; }
-
-    .lab-tag {
-        background: #f59e0b; color: #000; padding: 6px 15px; border-radius: 6px;
-        font-weight: 800; font-size: 12px; margin-top: 15px; display: inline-block;
-        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
-    }
+    body.modal-open .modal-overlay, body.modal-open .custom-modal { display: block; }
+    .custom-modal b { font-size: 1rem; color: var(--accent); display: block; margin-bottom: 8px; }
+    .custom-modal small { font-size: 0.9rem; color: var(--text-main); display: block; margin-bottom: 12px; }
+    .close-btn { position: absolute; top: 8px; right: 10px; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+    .lab-tag { background: #f59e0b; color: #000; padding: 4px 10px; border-radius: 4px; font-weight: 800; font-size: 11px; margin-top: 10px; display: inline-block; }
 </style>
 </head>
 <body>
 
 <div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
-
 <div class="custom-modal" id="infoModal">
     <span class="close-btn" onclick="closeModal()">×</span>
     <div id="modalBody"></div>
 </div>
 
 <div class="container">
-    <h1>Horario Electrónica Bloque 5</h1>
-    <p class="subtitle">Gestión 2026-1 • Haz clic en una materia para ampliar</p>
+    <h1>Horario Electrónica B5</h1>
+    <p class="subtitle">Gestión 2026-1</p>
 
     <div class="table-wrapper">
         <table id="scheduleTable">
@@ -175,15 +147,14 @@
 
 <script>
     const laboratoristas = {
-        "Lunes": { 6: "ROSARIO-MATEO", 8: "ROSARIO-MATEO", 10: "ROS-MAT-AND", 12: "ROS-CAM", 14: "CAMILO", 16: "CAMILO", 18: "CAM-AND", 20: "CAM-AND" },
-        "Martes": { 6: "ROS-MIG", 8: "ROS-MIG", 10: "ROS-MIG", 12: "ROS-MIG-MAT", 14: "CAMILO", 16: "AND-MAT", 18: "CAM-AND-MAT", 20: "CAM-AND-MAT" },
-        "Miércoles": { 6: "MIGUEL", 8: "MIG-AND", 10: "MIG-AND", 12: "MIGUEL", 14: "CAM-AND", 16: "CAMILO", 18: "CAM-AND-MAT", 20: "CAM-AND" },
-        "Jueves": { 6: "ROS-MIG", 8: "ROS-MIG-AND", 10: "ROS-MIG-AND", 12: "ROS-MIG-CAM", 14: "CAMILO", 16: "AND-MAT", 18: "CAM-AND-MAT", 20: "CAM-AND-MAT" },
-        "Viernes": { 6: "ROS-MIG", 8: "ROS-MIG-AND", 10: "ROS-MIG", 12: "ROS-AND-CAM", 14: "AND-CAM-MAT", 16: "AND-CAM", 18: "MAT-MIG", 20: "MAT-CAM" },
-        "Sábado": { 6: "ROS-MAT", 8: "ROS-MAT-MIG", 10: "ROS-MAT-MIG", 12: "ROS-MAT-MIG", 14: "ROS-MAT-MIG", 16: "ROS-MAT", 18: "MAT-MIG", 20: "MAT-CAM" }
+        "Lunes": { 6: "ROS-MAT", 8: "ROS-MAT", 10: "R-M-A", 12: "ROS-CAM", 14: "CAMILO", 16: "CAMILO", 18: "CAM-AND", 20: "CAM-AND" },
+        "Martes": { 6: "ROS-MIG", 8: "ROS-MIG", 10: "ROS-MIG", 12: "R-M-M", 14: "CAMILO", 16: "AND-MAT", 18: "C-A-M", 20: "C-A-M" },
+        "Miércoles": { 6: "MIGUEL", 8: "MIG-AND", 10: "MIG-AND", 12: "MIGUEL", 14: "CAM-AND", 16: "CAMILO", 18: "C-A-M", 20: "CAM-AND" },
+        "Jueves": { 6: "ROS-MIG", 8: "R-M-A", 10: "R-M-A", 12: "R-M-C", 14: "CAMILO", 16: "AND-MAT", 18: "C-A-M", 20: "C-A-M" },
+        "Viernes": { 6: "ROS-MIG", 8: "R-M-A", 10: "ROS-MIG", 12: "R-A-C", 14: "A-C-M", 16: "AND-CAM", 18: "MAT-MIG", 20: "MAT-CAM" },
+        "Sábado": { 6: "ROS-MAT", 8: "R-M-M", 10: "R-M-M", 12: "R-M-M", 14: "R-M-M", 16: "ROS-MAT", 18: "MAT-MIG", 20: "MAT-CAM" }
     };
 
-    // Datos resumidos de materias (se mantienen iguales)
     const materiasData = [
         { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
         { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12-14", a: "5-102", start: 12 },
@@ -263,11 +234,11 @@
             .replace(/COMUNICACIONES/g, "COMUN.")
             .replace(/CONMUTACION/g, "CONMUT.")
             .replace(/SERVOMECANISMOS/g, "SERVO.")
-            .replace(/DISEÑO ELEM MAQ/g, "DIS. ELEM. MAQ.")
+            .replace(/DISEÑO ELEM MAQ/g, "D.E.M.")
             .replace(/INTRO /g, "I. ");
     }
 
-    const infoCells = {}; // Objeto para guardar la info por celda
+    const infoCells = {};
 
     function initTable() {
         const tbody = document.getElementById('scheduleBody');
@@ -282,10 +253,7 @@
                 const cellId = `cell-${dia}-${h}`;
                 const cell = document.createElement('td');
                 const lab = laboratoristas[dia][h] || "---";
-                
-                // Inicializar datos para el modal
                 infoCells[cellId] = { materias: [], lab: lab };
-
                 cell.innerHTML = `
                     <div class="cell-container" onclick="openModal('${cellId}')">
                         <div class="cell-content" id="content-${cellId}"></div>
@@ -302,12 +270,8 @@
             const blockStart = m.start % 2 === 0 ? m.start : m.start - 1;
             const cellId = `cell-${m.dia}-${blockStart}`;
             const container = document.getElementById(`content-${cellId}`);
-            
             if (container) {
-                // Agregar al listado del modal
                 infoCells[cellId].materias.push(m);
-
-                // Dibujar bloque en la tabla
                 const block = document.createElement('div');
                 block.className = 'materia-block';
                 block.innerHTML = `<span>${shortM(m.m)}</span> <span class="aula-badge">${m.a}</span>`;
@@ -316,35 +280,23 @@
         });
     }
 
-    // --- LÓGICA DEL MODAL ÚNICO ---
     function openModal(cellId) {
         const data = infoCells[cellId];
         const modalBody = document.getElementById('modalBody');
-        
         let html = "";
         if (data.materias.length === 0) {
-            html = "<b>ESPACIO LIBRE</b><small>No hay clases programadas</small>";
+            html = "<b>ESPACIO LIBRE</b><small>No hay clases</small>";
         } else {
             data.materias.forEach(m => {
-                html += `
-                    <div>
-                        <b>${m.m}</b>
-                        <small>DOCENTE: ${m.d}<br>AULA: ${m.a}</small>
-                    </div>
-                `;
+                html += `<div><b>${m.m}</b><small>${m.d}<br>AULA: ${m.a}</small></div>`;
             });
         }
-        
-        html += `<div class="lab-tag">🛠️ LABORATORISTA: ${data.lab}</div>`;
-        
+        html += `<div class="lab-tag">🛠️ LAB: ${data.lab}</div>`;
         modalBody.innerHTML = html;
         document.body.classList.add('modal-open');
     }
 
-    function closeModal() {
-        document.body.classList.remove('modal-open');
-    }
-
+    function closeModal() { document.body.classList.remove('modal-open'); }
     initTable();
 </script>
 </body>
