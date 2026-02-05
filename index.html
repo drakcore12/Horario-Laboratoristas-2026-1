@@ -10,177 +10,225 @@
             --accent: #3b82f6;
             --bg: #f1f5f9;
             --white: #ffffff;
-            --text-main: #334155;
+            --border: #e2e8f0;
         }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background-color: var(--bg);
-            color: var(--text-main);
             margin: 0; padding: 20px;
+            color: #1e293b;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1300px; margin: 0 auto; }
         h1 { text-align: center; color: var(--primary); margin-bottom: 5px; }
-        p.subtitle { text-align: center; margin-bottom: 30px; color: #64748b; }
+        p.subtitle { text-align: center; margin-bottom: 20px; color: #64748b; }
 
-        /* Buscador */
-        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
-        .search-box {
-            flex-grow: 1;
-            padding: 12px 20px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-            transition: border 0.3s;
-        }
-        .search-box:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #3b82f622; }
-
-        /* Tabla */
-        .table-card {
+        /* Contenedor de tabla ajustable */
+        .table-wrapper {
             background: var(--white);
             border-radius: 12px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            /* ELIMINADO overflow: hidden para que el hover no se corte */
+            border: 1px solid var(--border);
+            position: relative;
         }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { background: var(--primary); color: white; padding: 15px; text-align: left; font-size: 14px; }
-        td { padding: 14px 15px; border-bottom: 1px solid #f1f5f9; position: relative; }
-        
-        tr:hover { background-color: #f8fafc; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: fixed; /* Columnas de igual ancho */
+        }
 
-        /* Tooltip / Hover Card */
-        .materia-container { cursor: help; color: var(--accent); font-weight: 600; }
-        
+        th { 
+            background: var(--primary); 
+            color: white; 
+            padding: 12px; 
+            font-size: 13px; 
+            border: 1px solid #334155;
+        }
+
+        td { 
+            height: 50px; 
+            border: 1px solid var(--border); 
+            vertical-align: top; 
+            padding: 5px; 
+            position: relative; /* Base para el hover card */
+        }
+
+        .hour-col { 
+            width: 90px; 
+            background: #f8fafc; 
+            font-weight: bold; 
+            text-align: center; 
+            font-size: 12px;
+        }
+
+        /* Bloque de Materia */
+        .materia-block {
+            background: #eff6ff;
+            border-left: 4px solid var(--accent);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: help;
+            height: calc(100% - 10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .materia-block:hover { background: #dbeafe; }
+
+        /* Hover Card Corregido */
         .hover-card {
             visibility: hidden;
-            width: 280px;
+            width: 260px;
             background: #1e293b;
             color: white;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 15px;
             position: absolute;
-            z-index: 100;
-            bottom: 120%;
-            left: 0;
+            z-index: 9999; /* Por encima de todo */
+            top: 50%;
+            left: 105%; /* Aparece a la derecha para evitar cortes */
+            transform: translateY(-50%);
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
             pointer-events: none;
         }
 
-        .hover-card::after {
-            content: "";
-            position: absolute;
-            top: 100%; left: 20px;
-            border-width: 8px; border-style: solid;
-            border-color: #1e293b transparent transparent transparent;
-        }
-
-        .materia-container:hover .hover-card {
+        .materia-block:hover .hover-card {
             visibility: visible;
             opacity: 1;
-            bottom: 110%;
+            left: 110%;
         }
 
+        /* Tags dentro del hover */
         .lab-tag {
-            background: #334155;
-            color: #fbbf24;
+            background: #fbbf24;
+            color: #000;
             padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            display: inline-block;
-            margin-top: 8px;
-            border: 1px solid #475569;
+            border-radius: 5px;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            font-size: 11px;
         }
 
-        .docente-name { font-size: 13px; color: #64748b; font-weight: normal; }
+        .aula-badge {
+            background: #334155;
+            color: #fff;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Horario de Microcontroladores y Digitales</h1>
-    <p class="subtitle">Bloque 5 - Facultad de Electrónica 2026</p>
+    <h1>Horario Electrónica Bloque 5</h1>
+    <p class="subtitle">Gestión de Aulas y Laboratoristas 2026-1</p>
 
-    <div class="controls">
-        <input type="text" id="search" class="search-box" placeholder="Filtrar por materia, docente o aula...">
-    </div>
-
-    <div class="table-card">
-        <table>
+    <div class="table-wrapper">
+        <table id="scheduleTable">
             <thead>
                 <tr>
-                    <th>Materia / Información</th>
-                    <th>Docente</th>
-                    <th>Día</th>
-                    <th>Horario</th>
-                    <th>Aula</th>
+                    <th class="hour-col">Hora</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sábado</th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="scheduleBody">
+                </tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // Datos de Laboratoristas (Simplificado para el cruce)
     const laboratoristas = {
-        "Lunes": { 6: "ROSARIO - MATEO", 12: "ROSARIO - CAMILO", 18: "CAMILO - ANDERSON", 20: "CAMILO - ANDERSON" },
-        "Martes": { 6: "ROSARIO - MIGUEL", 12: "ROSARIO - MIGUEL - MATEO", 18: "CAMILO - ANDERSON - MATEO", 20: "CAMILO - ANDERSON - MATEO" },
-        "Miércoles": { 6: "MIGUEL", 18: "CAMILO - ANDERSON - MATEO", 20: "CAMILO - ANDERSON" },
-        "Jueves": { 6: "ROSARIO - MIGUEL", 18: "ANDERSON - MATEO", 20: "CAMILO - ANDERSON - MATEO" },
-        "Viernes": { 6: "ROSARIO - MIGUEL", 18: "ROSARIO - MIGUEL / MATEO - MIGUEL", 20: "MATEO - MIGUEL" },
-        "Sábado": { 8: "ROSARIO - MATEO - MIGUEL", 12: "ROSARIO - MATEO - MIGUEL", 14: "ROSARIO - MATEO - MIGUEL" }
+        "Lunes": { 6: "ROSARIO-MATEO", 12: "ROSARIO-CAMILO", 16: "CAMILO", 18: "CAMILO-ANDERSON", 20: "CAMILO-ANDERSON" },
+        "Martes": { 6: "ROSARIO-MIGUEL", 12: "ROSARIO-MIGUEL-MATEO", 14: "CAMILO", 18: "CAMILO-ANDERSON-MATEO", 20: "CAMILO-ANDERSON-MATEO" },
+        "Miércoles": { 6: "MIGUEL", 18: "CAMILO-ANDERSON-MATEO", 20: "CAMILO-ANDERSON" },
+        "Jueves": { 6: "ROSARIO-MIGUEL", 12: "MIGUEL-CAMILO", 18: "ANDERSON-MATEO", 20: "CAMILO-ANDERSON-MATEO" },
+        "Viernes": { 6: "ROSARIO-MIGUEL", 18: "MATEO-MIGUEL", 20: "MATEO-MIGUEL" },
+        "Sábado": { 8: "ROSARIO-MATEO-MIGUEL", 12: "ROSARIO-MATEO-MIGUEL", 14: "ROSARIO-MATEO-MIGUEL" }
     };
 
-    const clases = [
-        { d: "ANDRES FELIPE ISAZA PIEDRAHITA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18:00 - 20:00", a: "5-105", hIn: 18 },
-        { d: "ANDRES FELIPE ISAZA PIEDRAHITA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12:00 - 14:00", a: "5-102", hIn: 12 },
-        { d: "BAYARDO EMILIO CADAVID GOMEZ", m: "SISTEMAS AUTOMATICOS", dia: "Martes", h: "20:00 - 22:00", a: "5-102", hIn: 20 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18:00 - 20:00", a: "5-202", hIn: 18 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08:00 - 12:00", a: "5-102", hIn: 8 }
-        // Se pueden agregar todos los demás registros aquí
+    const materias = [
+        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18:00-20:00", a: "5-105", row: 18, span: 2 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12:00-14:00", a: "5-102", row: 12, span: 2 },
+        { d: "BAYARDO EMILIO CADAVID", m: "SIS. AUTO. CONTROL", dia: "Martes", h: "20:00-22:00", a: "5-102", row: 20, span: 2 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06:00-08:00", a: "5-202", row: 6, span: 2 },
+        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08:00-12:00", a: "5-202", row: 8, span: 4 }
     ];
 
-    function getLab(dia, hora) {
-        return laboratoristas[dia] && laboratoristas[dia][hora] ? laboratoristas[dia][hora] : "Por confirmar";
+    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+    function initTable() {
+        const tbody = document.getElementById('scheduleBody');
+        
+        for (let h = 6; h <= 21; h++) {
+            const row = document.createElement('tr');
+            
+            // Columna Hora
+            const hourCell = document.createElement('td');
+            hourCell.className = 'hour-col';
+            hourCell.innerText = `${h}:00`;
+            row.appendChild(hourCell);
+
+            // Columnas Días
+            dias.forEach(dia => {
+                const cell = document.createElement('td');
+                cell.id = `cell-${dia}-${h}`;
+                row.appendChild(cell);
+            });
+            
+            tbody.appendChild(row);
+        }
+        renderMaterias();
     }
 
-    function render(items) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = items.map(c => `
-            <tr>
-                <td>
-                    <div class="materia-container">
-                        ${c.m}
+    function renderMaterias() {
+        materias.forEach(m => {
+            const cell = document.getElementById(`cell-${m.dia}-${m.row}`);
+            if (cell) {
+                // Ajustar el alto según la duración
+                cell.rowSpan = m.span;
+                // Borrar celdas sobrantes (opcional para limpieza)
+                for(let i=1; i<m.span; i++) {
+                    const extra = document.getElementById(`cell-${m.dia}-${m.row + i}`);
+                    if(extra) extra.style.display = 'none';
+                }
+
+                const labTurno = (laboratoristas[m.dia] && laboratoristas[m.dia][m.row]) || "VER TABLA";
+
+                cell.innerHTML = `
+                    <div class="materia-block">
+                        <strong>${m.m}</strong>
+                        <span class="aula-badge">${m.a}</span>
+                        
                         <div class="hover-card">
-                            <div style="color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px;">Detalles de Clase</div>
-                            <div style="font-size: 16px; margin-bottom: 10px;">${c.m}</div>
-                            <div style="font-size: 13px;">📍 Aula: ${c.a}</div>
-                            <div style="font-size: 13px;">📅 Día: ${c.dia}</div>
-                            <div class="lab-tag">
-                                🛠️ Lab de turno: ${getLab(c.dia, c.hIn)}
-                            </div>
+                            <span style="color:#94a3b8; font-size:10px">DOCENTE</span>
+                            <div style="margin-bottom:8px">${m.d}</div>
+                            <span style="color:#94a3b8; font-size:10px">HORARIO</span>
+                            <div>${m.h}</div>
+                            <div class="lab-tag">🛠️ LAB: ${labTurno}</div>
                         </div>
                     </div>
-                </td>
-                <td class="docente-name">${c.d}</td>
-                <td>${c.dia}</td>
-                <td><code style="background: #e2e8f0; padding: 3px 6px; border-radius: 4px;">${c.h}</code></td>
-                <td><strong>${c.a}</strong></td>
-            </tr>
-        `).join('');
+                `;
+            }
+        });
     }
 
-    document.getElementById('search').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
-        render(clases.filter(c => c.m.toLowerCase().includes(val) || c.d.toLowerCase().includes(val)));
-    });
-
-    render(clases);
+    initTable();
 </script>
+
 </body>
 </html>
