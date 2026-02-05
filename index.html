@@ -148,7 +148,20 @@
   height: 8px;
   border-radius: 50%;
 }
+/* Color para las filas PARES */
+#scheduleBody tr:nth-child(even) {
+    background-color: rgba(30, 41, 59, 0.5); /* Un tono ligeramente más claro que el fondo */
+}
 
+/* Asegurar que la columna de la HORA también cambie de color en las filas pares */
+#scheduleBody tr:nth-child(even) .hour-col {
+    background-color: #1a2333; /* Un azul muy oscuro para mantener el contraste */
+}
+
+/* Color para las filas IMPARES (opcional, para mayor control) */
+#scheduleBody tr:nth-child(odd) {
+    background-color: var(--bg-card);
+}
 /* Colores por laboratorista */
 .lab-Rosario  { background: #f97316; } /* naranja */
 .lab-Anderson { background: #22c55e; } /* verde */
@@ -420,3 +433,4 @@ function renderLabDots(labString) {
 </script>
 </body>
 </html>
+
