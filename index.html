@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horario Electrónica 2026-1</title>
-   <style>
+<style>
     :root {
         /* Palette Dark Minimalist */
         --bg-main: #020617;
@@ -15,7 +15,7 @@
         --accent-glow: rgba(59, 130, 246, 0.3);
         --border: #1e293b;
         --white: #ffffff;
-        --glass: rgba(30, 41, 59, 0.8);
+        --glass: rgba(15, 23, 42, 0.9);
     }
 
     * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -24,33 +24,24 @@
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         background-color: var(--bg-main);
         color: var(--text-main);
-        margin: 0;
-        padding: 20px;
+        margin: 0; padding: 20px;
         line-height: 1.5;
     }
 
     .container { max-width: 1400px; margin: 0 auto; }
 
     h1 { 
-        text-align: center; 
-        font-weight: 800; 
-        letter-spacing: -0.025em; 
-        font-size: 1.8rem;
+        text-align: center; font-weight: 800; letter-spacing: -0.025em; font-size: 1.8rem;
         background: linear-gradient(to right, #60a5fa, #3b82f6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
     }
 
     p.subtitle { 
-        text-align: center; 
-        margin-bottom: 25px; 
-        color: var(--text-muted); 
-        font-size: 0.9rem;
-        font-weight: 400;
+        text-align: center; margin-bottom: 25px; color: var(--text-muted); 
+        font-size: 0.9rem; font-weight: 400;
     }
 
-    /* Table Glass Design */
     .table-wrapper {
         background: var(--bg-card);
         border-radius: 12px;
@@ -59,142 +50,86 @@
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     }
 
-    table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 800px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; min-width: 900px; }
 
     th { 
-        background: #1e293b; 
-        color: var(--text-main); 
-        padding: 14px; 
-        font-size: 12px; 
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        background: #1e293b; color: var(--text-muted); padding: 14px; 
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
         border-bottom: 1px solid var(--border);
     }
 
-    td { 
-        height: 70px; 
-        border: 0.5px solid var(--border); 
-        vertical-align: top; 
-        position: relative; 
-    }
+    td { height: 80px; border: 0.5px solid var(--border); vertical-align: top; position: relative; }
 
     .hour-col { 
-        width: 100px; 
-        background: #0f172a; 
-        font-weight: 700; 
-        text-align: center; 
-        font-size: 11px; 
-        color: var(--accent);
-        border-right: 2px solid var(--border);
+        width: 100px; background: #0f172a; font-weight: 700; text-align: center; 
+        font-size: 11px; color: var(--accent); border-right: 2px solid var(--border);
     }
 
-    /* Cell Interaction */
-    .cell-container {
-        width: 100%; height: 100%;
-        padding: 6px;
-        cursor: pointer;
-    }
-
+    /* Cell Content & Minimalist Blocks */
+    .cell-container { width: 100%; height: 100%; padding: 8px; cursor: pointer; }
     .cell-container:hover { background: rgba(59, 130, 246, 0.03); }
 
+    .cell-content { display: flex; flex-direction: column; gap: 6px; }
+
     .materia-block {
-        background: rgba(59, 130, 246, 0.1);
-        border-left: 3px solid var(--accent);
-        padding: 4px 8px;
-        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 8px;
+        border-left: 2px solid var(--accent);
+        background: transparent !important;
         font-size: 10px;
-        font-weight: 600;
-        margin-bottom: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-weight: 500;
+        color: var(--text-main);
+        line-height: 1.2;
     }
 
-    .materia-block:hover { 
-        transform: translateX(4px); 
-        background: rgba(59, 130, 246, 0.2); 
+    .materia-block:hover { transform: translateX(4px); color: var(--accent); }
+
+    .aula-badge { 
+        background: rgba(59, 130, 246, 0.1); 
+        color: var(--accent); 
+        padding: 1px 4px; 
+        border-radius: 4px; 
+        font-size: 9px;
+        font-weight: 700;
+        border: 1px solid rgba(59, 130, 246, 0.2);
     }
 
-    /* Elegant Hover Card */
+    /* Elegant Hover Card (Glassmorphism) */
     .hover-card {
-        visibility: hidden;
-        opacity: 0;
-        width: 260px;
+        visibility: hidden; opacity: 0; width: 260px;
         background: var(--glass);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: white;
-        border-radius: 10px;
-        padding: 15px;
-        position: absolute;
-        z-index: 9999;
-        top: 0;
-        left: 105%;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: white; border-radius: 12px; padding: 16px;
+        position: absolute; z-index: 9999; top: 0; left: 105%;
         transform: scale(0.95);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
         pointer-events: none;
     }
 
-    .cell-container:hover .hover-card {
-        visibility: visible;
-        opacity: 1;
-        transform: scale(1);
-    }
+    .cell-container:hover .hover-card { visibility: visible; opacity: 1; transform: scale(1); }
 
-    /* Responsive flip for Sábado/Viernes */
+    /* Fix cutting on right edges */
     td:nth-last-child(1) .hover-card, 
-    td:nth-last-child(2) .hover-card {
-        left: auto;
-        right: 105%;
-    }
+    td:nth-last-child(2) .hover-card { left: auto; right: 105%; }
 
     .lab-tag {
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
-        color: #000;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-weight: 800;
-        display: inline-block;
-        margin-top: 10px;
-        font-size: 10px;
-        text-transform: uppercase;
+        background: linear-gradient(135deg, #fbbf24, #d97706);
+        color: #000; padding: 4px 10px; border-radius: 6px;
+        font-weight: 800; display: inline-block; margin-top: 12px;
+        font-size: 10px; letter-spacing: 0.02em;
     }
 
-    .aula-badge { 
-        background: var(--accent); 
-        color: #fff; 
-        padding: 2px 5px; 
-        border-radius: 4px; 
-        font-size: 9px;
-        float: right;
-    }
-
-    /* Scrollbar Styling */
-    .table-wrapper::-webkit-scrollbar { height: 8px; }
-    .table-wrapper::-webkit-scrollbar-track { background: var(--bg-main); }
-    .table-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-    /* RESPONSIVE: Mobile View */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
         body { padding: 10px; }
-        h1 { font-size: 1.4rem; }
-        
-        .table-wrapper { border: none; background: transparent; box-shadow: none; }
-        
-        /* Opcional: Si quieres que en móvil se desplace lateralmente, mantenemos la tabla.
-           Si quieres que se apile, usaríamos display: block. 
-           Por el tipo de datos, el scroll lateral suave es mejor en horarios. */
-        table { min-width: 900px; } 
-
+        .table-wrapper { border: none; }
         .hover-card {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9) !important;
-            width: 80vw;
-            right: auto !important;
-        }
-        
-        .cell-container:hover .hover-card {
-            transform: translate(-50%, -50%) scale(1) !important;
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.95) !important;
+            width: 85vw; right: auto !important;
         }
     }
 </style>
@@ -410,3 +345,4 @@
 </script>
 </body>
 </html>
+
