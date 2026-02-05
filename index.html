@@ -120,86 +120,90 @@
 
     const materiasData = [
         // 06:00 - 08:00
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6, dur: 2 },
-        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Martes", h: "06-08", a: "5-104", start: 6, dur: 2 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6, dur: 2 },
-        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Jueves", h: "06-08", a: "5-104", start: 6, dur: 2 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Viernes", h: "06-08", a: "5-102", start: 6, dur: 2 },
-        { d: "RUBEN DARIO ECHAVARRIA", m: "ELEC BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6, dur: 2 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6 },
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Martes", h: "06-08", a: "5-104", start: 6 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6 },
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Jueves", h: "06-08", a: "5-104", start: 6 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Viernes", h: "06-08", a: "5-102", start: 6 },
+        { d: "RUBEN DARIO ECHAVARRIA", m: "ELEC BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6 },
 
         // 08:00 - 12:00
-        { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8, dur: 3 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Sábado", h: "08-12", a: "5-102", start: 8, dur: 4 },
-        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELEC", dia: "Sábado", h: "08-12", a: "5-202", start: 8, dur: 4 },
+        { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Sábado", h: "08-12", a: "5-102", start: 8 },
+        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELEC", dia: "Sábado", h: "08-12", a: "5-202", start: 8 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Sábado", h: "10-12", a: "5-102", start: 10 },
 
         // 12:00 - 14:00
-        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Lunes", h: "12-14", a: "5-102", start: 12, dur: 2 },
-        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Martes", h: "12-14", a: "5-102", start: 12, dur: 2 },
-        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Jueves", h: "12-14", a: "5-102", start: 12, dur: 2 },
-        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Sábado", h: "12-14", a: "5-104", start: 12, dur: 2 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Lunes", h: "12-14", a: "5-102", start: 12 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Martes", h: "12-14", a: "5-102", start: 12 },
+        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Jueves", h: "12-14", a: "5-102", start: 12 },
+        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Sábado", h: "12-14", a: "5-104", start: 12 },
 
         // 14:00 - 16:00
-        { d: "RAMIRO ANTONIO LOPERA", m: "INTRO FAB SOST", dia: "Martes", h: "14-16", a: "5-102", start: 14, dur: 2 },
-        { d: "JULIO RESTREPO", m: "TFD I", dia: "Jueves", h: "14-16", a: "5-105", start: 14, dur: 2 },
-        { d: "RAUL BEDOYA", m: "MEC CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 12, dur: 4 },
-        { d: "JULIO RESTREPO", m: "TFD I", dia: "Sábado", h: "12-16", a: "5-105", start: 12, dur: 4 },
+        { d: "RAMIRO ANTONIO LOPERA", m: "INTRO FAB SOST", dia: "Martes", h: "14-16", a: "5-102", start: 14 },
+        { d: "JULIO RESTREPO", m: "TFD I", dia: "Jueves", h: "14-16", a: "5-105", start: 14 },
+        { d: "RAUL BEDOYA", m: "MEC CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 14 },
+        { d: "JULIO RESTREPO", m: "TFD I", dia: "Sábado", h: "12-16", a: "5-105", start: 14 },
 
         // 16:00 - 18:00
-        { d: "CRISTIAN CORTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "16-18", a: "5-102", start: 16, dur: 2 },
+        { d: "CRISTIAN CORTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "16-18", a: "5-102", start: 16 },
 
-        // 18:00 - 20:00 (Bloque pesado)
-        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Lunes", h: "18-20", a: "5-104", start: 18, dur: 2 },
-        { d: "DIEGO OROZCO", m: "CIRCUITOS ELEC", dia: "Lunes", h: "18-20", a: "5-102", start: 18, dur: 2 },
-        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "18-20", a: "5-105", start: 18, dur: 2 },
-        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18, dur: 2 },
-        
-        { d: "EDGAR BETANCUR", m: "EII LAB", dia: "Martes", h: "18-20", a: "5-102", start: 18, dur: 2 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18, dur: 2 },
-        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Martes", h: "18-20", a: "5-105", start: 18, dur: 2 },
-
-        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18, dur: 2 },
-
-        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "18-20", a: "5-104", start: 18, dur: 2 },
-        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18, dur: 2 },
-        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Jueves", h: "18-20", a: "5-105", start: 18, dur: 2 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18, dur: 2 },
-
-        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROL", dia: "Viernes", h: "18-20", a: "5-105", start: 18, dur: 2 },
-        { d: "RAUL BEDOYA", m: "DIB TEC 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18, dur: 2 },
-        { d: "JULIO RESTREPO", m: "ITS MECAT", dia: "Viernes", h: "18-22", a: "5-202", start: 18, dur: 4 },
-        { d: "DERFREY DUQUE", m: "ITS SIST DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 18, dur: 4 },
+        // 18:00 - 20:00
+        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Lunes", h: "18-20", a: "5-104", start: 18 },
+        { d: "DIEGO OROZCO", m: "CIRCUITOS ELEC", dia: "Lunes", h: "18-20", a: "5-102", start: 18 },
+        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "18-20", a: "5-105", start: 18 },
+        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18 },
+        { d: "EDGAR BETANCUR", m: "EII LAB", dia: "Martes", h: "18-20", a: "5-102", start: 18 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18 },
+        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Martes", h: "18-20", a: "5-105", start: 18 },
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18 },
+        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "18-20", a: "5-104", start: 18 },
+        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18 },
+        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Jueves", h: "18-20", a: "5-105", start: 18 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18 },
+        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROL", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
+        { d: "RAUL BEDOYA", m: "DIB TEC 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18 },
 
         // 20:00 - 22:00
-        { d: "JHON JAIRO RUEDA", m: "SERVOMEC", dia: "Lunes", h: "20-22", a: "5-104", start: 20, dur: 2 },
-        { d: "JOSE PULGARIN", m: "CIR DIG", dia: "Lunes", h: "20-22", a: "5-102", start: 20, dur: 2 },
-        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Martes", h: "20-22", a: "5-102", start: 20, dur: 2 },
-        { d: "JUAN ZULUAGA", m: "REDES", dia: "Martes", h: "20-22", a: "5-202", start: 20, dur: 2 },
-        { d: "HECTOR TABORDA", m: "INST IND", dia: "Martes", h: "20-22", a: "5-105", start: 20, dur: 2 },
-
-        { d: "DIEGO OROZCO", m: "CIR ELEC", dia: "Miércoles", h: "18-22", a: "5-102", start: 20, dur: 2 },
-        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Miércoles", h: "20-22", a: "5-104", start: 20, dur: 2 },
-        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Miércoles", h: "20-22", a: "5-105", start: 20, dur: 2 },
-
-        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "20-22", a: "5-104", start: 20, dur: 2 },
-        { d: "HECTOR TABORDA", m: "INST IND", dia: "Jueves", h: "20-22", a: "5-105", start: 20, dur: 2 },
-        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Jueves", h: "20-22", a: "5-102", start: 20, dur: 2 },
-        { d: "JUAN ZULUAGA", m: "REDES", dia: "Jueves", h: "20-22", a: "5-202", start: 20, dur: 2 },
-
-        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Viernes", h: "20-22", a: "5-104", start: 20, dur: 2 },
-        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Viernes", h: "20-22", a: "5-105", start: 20, dur: 2 }
+        { d: "JHON JAIRO RUEDA", m: "SERVOMEC", dia: "Lunes", h: "20-22", a: "5-104", start: 20 },
+        { d: "JOSE PULGARIN", m: "CIR DIG", dia: "Lunes", h: "20-22", a: "5-102", start: 20 },
+        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Martes", h: "20-22", a: "5-102", start: 20 },
+        { d: "JUAN ZULUAGA", m: "REDES", dia: "Martes", h: "20-22", a: "5-202", start: 20 },
+        { d: "HECTOR TABORDA", m: "INST IND", dia: "Martes", h: "20-22", a: "5-105", start: 20 },
+        { d: "DIEGO OROZCO", m: "CIR ELEC", dia: "Miércoles", h: "18-22", a: "5-102", start: 20 },
+        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Miércoles", h: "20-22", a: "5-104", start: 20 },
+        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Miércoles", h: "20-22", a: "5-105", start: 20 },
+        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "20-22", a: "5-104", start: 20 },
+        { d: "HECTOR TABORDA", m: "INST IND", dia: "Jueves", h: "20-22", a: "5-105", start: 20 },
+        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Jueves", h: "20-22", a: "5-102", start: 20 },
+        { d: "JUAN ZULUAGA", m: "REDES", dia: "Jueves", h: "20-22", a: "5-202", start: 20 },
+        { d: "JULIO RESTREPO", m: "ITS MECAT", dia: "Viernes", h: "18-22", a: "5-202", start: 20 },
+        { d: "DERFREY DUQUE", m: "ITS SIST DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 20 },
+        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Viernes", h: "20-22", a: "5-104", start: 20 },
+        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Viernes", h: "20-22", a: "5-105", start: 20 }
     ];
 
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     function initTable() {
         const tbody = document.getElementById('scheduleBody');
-        for (let h = 6; h <= 21; h++) {
+        tbody.innerHTML = ""; // Limpiar antes de renderizar
+        
+        // El ciclo ahora va de 2 en 2
+        for (let h = 6; h <= 20; h += 2) {
             const row = document.createElement('tr');
+            
+            // Celda de Hora (6-8, 8-10, etc)
             const hourCell = document.createElement('td');
             hourCell.className = 'hour-col';
-            hourCell.innerText = h < 12 ? `${h}-${h+1} AM` : `${h}-${h+1} PM`;
+            const endH = h + 2;
+            const periodStart = h < 12 ? "AM" : "PM";
+            const periodEnd = endH <= 12 ? "AM" : "PM";
+            hourCell.innerText = `${h}-${endH} ${periodEnd}`;
+            
             row.appendChild(hourCell);
 
+            // Celdas de Días
             dias.forEach(dia => {
                 const cell = document.createElement('td');
                 cell.id = `cell-${dia}-${h}`;
@@ -213,31 +217,34 @@
 
     function renderMaterias() {
         materiasData.forEach(m => {
-            for (let i = 0; i < m.dur; i++) {
-                const currentHour = m.start + i;
-                const cell = document.getElementById(`cell-${m.dia}-${currentHour}`);
-                if (cell) {
-                    const content = cell.querySelector('.cell-content');
-                    const lab = (laboratoristas[m.dia] && laboratoristas[m.dia][m.start]) || "POR DEF";
-                    
-                    const block = document.createElement('div');
-                    block.className = 'materia-block';
-                    block.innerHTML = `
-                        <strong>${m.m}</strong> <span class="aula-badge">${m.a}</span>
-                        <div class="hover-card">
-                            <b style="color:#3b82f6">${m.m}</b><br>
-                            👨‍🏫 Docente: ${m.d}<br>
-                            🕒 Horario: ${m.h}<br>
-                            📍 Aula: ${m.a}
-                            <div class="lab-tag">🛠️ LAB: ${lab}</div>
-                        </div>
-                    `;
-                    content.appendChild(block);
-                }
+            // Buscamos la celda que corresponde al inicio del bloque de 2 horas
+            // (Si una materia empieza a las 7, se mostrará en el bloque de 6-8)
+            const blockStart = m.start % 2 === 0 ? m.start : m.start - 1;
+            const cell = document.getElementById(`cell-${m.dia}-${blockStart}`);
+            
+            if (cell) {
+                const content = cell.querySelector('.cell-content');
+                const lab = (laboratoristas[m.dia] && laboratoristas[m.dia][m.start]) || "POR DEF";
+                
+                const block = document.createElement('div');
+                block.className = 'materia-block';
+                block.innerHTML = `
+                    <strong>${m.m}</strong> <span class="aula-badge">${m.a}</span>
+                    <div class="hover-card">
+                        <b style="color:#3b82f6">${m.m}</b><br>
+                        👨‍🏫 Docente: ${m.d}<br>
+                        🕒 Horario: ${m.h}<br>
+                        📍 Aula: ${m.a}
+                        <div class="lab-tag">🛠️ LAB: ${lab}</div>
+                    </div>
+                `;
+                content.appendChild(block);
             }
         });
     }
+
     initTable();
 </script>
 </body>
 </html>
+
