@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario Electrónica 2026-1</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #3b82f6;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --text-main: #334155;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0; padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; }
+        p.subtitle { text-align: center; margin-bottom: 30px; color: #64748b; }
+
+        /* Buscador */
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+        .search-box {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        .search-box:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #3b82f622; }
+
+        /* Tabla */
+        .table-card {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--primary); color: white; padding: 15px; text-align: left; font-size: 14px; }
+        td { padding: 14px 15px; border-bottom: 1px solid #f1f5f9; position: relative; }
+        
+        tr:hover { background-color: #f8fafc; }
+
+        /* Tooltip / Hover Card */
+        .materia-container { cursor: help; color: var(--accent); font-weight: 600; }
+        
+        .hover-card {
+            visibility: hidden;
+            width: 280px;
+            background: #1e293b;
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            position: absolute;
+            z-index: 100;
+            bottom: 120%;
+            left: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+
+        .hover-card::after {
+            content: "";
+            position: absolute;
+            top: 100%; left: 20px;
+            border-width: 8px; border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+
+        .materia-container:hover .hover-card {
+            visibility: visible;
+            opacity: 1;
+            bottom: 110%;
+        }
+
+        .lab-tag {
+            background: #334155;
+            color: #fbbf24;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 8px;
+            border: 1px solid #475569;
+        }
+
+        .docente-name { font-size: 13px; color: #64748b; font-weight: normal; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Horario de Microcontroladores y Digitales</h1>
+    <p class="subtitle">Bloque 5 - Facultad de Electrónica 2026</p>
+
+    <div class="controls">
+        <input type="text" id="search" class="search-box" placeholder="Filtrar por materia, docente o aula...">
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Materia / Información</th>
+                    <th>Docente</th>
+                    <th>Día</th>
+                    <th>Horario</th>
+                    <th>Aula</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Datos de Laboratoristas (Simplificado para el cruce)
+    const laboratoristas = {
+        "Lunes": { 6: "ROSARIO - MATEO", 12: "ROSARIO - CAMILO", 18: "CAMILO - ANDERSON", 20: "CAMILO - ANDERSON" },
+        "Martes": { 6: "ROSARIO - MIGUEL", 12: "ROSARIO - MIGUEL - MATEO", 18: "CAMILO - ANDERSON - MATEO", 20: "CAMILO - ANDERSON - MATEO" },
+        "Miércoles": { 6: "MIGUEL", 18: "CAMILO - ANDERSON - MATEO", 20: "CAMILO - ANDERSON" },
+        "Jueves": { 6: "ROSARIO - MIGUEL", 18: "ANDERSON - MATEO", 20: "CAMILO - ANDERSON - MATEO" },
+        "Viernes": { 6: "ROSARIO - MIGUEL", 18: "ROSARIO - MIGUEL / MATEO - MIGUEL", 20: "MATEO - MIGUEL" },
+        "Sábado": { 8: "ROSARIO - MATEO - MIGUEL", 12: "ROSARIO - MATEO - MIGUEL", 14: "ROSARIO - MATEO - MIGUEL" }
+    };
+
+    const clases = [
+        { d: "ANDRES FELIPE ISAZA PIEDRAHITA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18:00 - 20:00", a: "5-105", hIn: 18 },
+        { d: "ANDRES FELIPE ISAZA PIEDRAHITA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12:00 - 14:00", a: "5-102", hIn: 12 },
+        { d: "BAYARDO EMILIO CADAVID GOMEZ", m: "SISTEMAS AUTOMATICOS", dia: "Martes", h: "20:00 - 22:00", a: "5-102", hIn: 20 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18:00 - 20:00", a: "5-202", hIn: 18 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08:00 - 12:00", a: "5-102", hIn: 8 }
+        // Se pueden agregar todos los demás registros aquí
+    ];
+
+    function getLab(dia, hora) {
+        return laboratoristas[dia] && laboratoristas[dia][hora] ? laboratoristas[dia][hora] : "Por confirmar";
+    }
+
+    function render(items) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = items.map(c => `
+            <tr>
+                <td>
+                    <div class="materia-container">
+                        ${c.m}
+                        <div class="hover-card">
+                            <div style="color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px;">Detalles de Clase</div>
+                            <div style="font-size: 16px; margin-bottom: 10px;">${c.m}</div>
+                            <div style="font-size: 13px;">📍 Aula: ${c.a}</div>
+                            <div style="font-size: 13px;">📅 Día: ${c.dia}</div>
+                            <div class="lab-tag">
+                                🛠️ Lab de turno: ${getLab(c.dia, c.hIn)}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="docente-name">${c.d}</td>
+                <td>${c.dia}</td>
+                <td><code style="background: #e2e8f0; padding: 3px 6px; border-radius: 4px;">${c.h}</code></td>
+                <td><strong>${c.a}</strong></td>
+            </tr>
+        `).join('');
+    }
+
+    document.getElementById('search').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        render(clases.filter(c => c.m.toLowerCase().includes(val) || c.d.toLowerCase().includes(val)));
+    });
+
+    render(clases);
+</script>
+</body>
+</html>
