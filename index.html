@@ -20,122 +20,75 @@
             color: #1e293b;
         }
 
-        .container { max-width: 1300px; margin: 0 auto; }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 2px; font-size: 1.5rem; }
-        p.subtitle { text-align: center; margin-bottom: 15px; color: #64748b; font-size: 0.9rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 2px; font-size: 1.4rem; }
+        p.subtitle { text-align: center; margin-bottom: 15px; color: #64748b; font-size: 0.8rem; }
 
         .table-wrapper {
             background: var(--white);
             border-radius: 8px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border);
-            position: relative;
         }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            table-layout: fixed;
-        }
-
-        th { 
-            background: var(--primary); 
-            color: white; 
-            padding: 8px; 
-            font-size: 12px; 
-            border: 1px solid #334155;
-        }
-
-        td { 
-            height: 35px; /* Altura disminuida */
-            border: 1px solid var(--border); 
-            vertical-align: top; 
-            padding: 2px; 
-            position: relative;
-        }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: var(--primary); color: white; padding: 8px; font-size: 11px; border: 1px solid #334155; }
+        td { height: 40px; border: 1px solid var(--border); vertical-align: top; padding: 2px; position: relative; }
 
         .hour-col { 
-            width: 100px; 
-            background: #f8fafc; 
-            font-weight: bold; 
-            text-align: center; 
-            font-size: 10px;
-            vertical-align: middle;
-            color: #475569;
+            width: 85px; background: #f8fafc; font-weight: bold; text-align: center; 
+            font-size: 10px; vertical-align: middle; color: #475569; 
         }
+
+        /* Contenedor de materias dentro de una celda */
+        .cell-content { display: flex; flex-direction: column; gap: 2px; height: 100%; }
 
         .materia-block {
             background: #eff6ff;
             border-left: 3px solid var(--accent);
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 9px;
             cursor: help;
-            height: calc(100% - 6px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
+            line-height: 1.1;
         }
 
-        .materia-block strong {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .materia-block:hover { background: #dbeafe; }
+        .materia-block:hover { background: #dbeafe; z-index: 10; }
 
         .hover-card {
             visibility: hidden;
-            width: 240px;
+            width: 220px;
             background: #1e293b;
             color: white;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 10px;
             position: absolute;
             z-index: 9999;
-            top: 50%;
+            top: 0;
             left: 105%;
-            transform: translateY(-50%);
             opacity: 0;
             transition: opacity 0.2s ease;
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
             pointer-events: none;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        .materia-block:hover .hover-card {
-            visibility: visible;
-            opacity: 1;
-        }
+        .materia-block:hover .hover-card { visibility: visible; opacity: 1; }
 
         .lab-tag {
-            background: #fbbf24;
-            color: #000;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: block;
-            margin-top: 8px;
-            font-size: 10px;
+            background: #fbbf24; color: #000; padding: 2px 4px;
+            border-radius: 3px; font-weight: bold; display: block;
+            margin-top: 5px; font-size: 9px;
         }
 
-        .aula-badge {
-            background: #334155;
-            color: #fff;
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-size: 9px;
-            width: fit-content;
-        }
+        .aula-badge { background: #334155; color: #fff; padding: 1px 3px; border-radius: 2px; font-size: 8px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Horario Electrónica Bloque 5</h1>
-    <p class="subtitle">Gestión de Aulas y Laboratoristas 2026-1</p>
+    <p class="subtitle">Laboratorios y Materias 2026-1</p>
 
     <div class="table-wrapper">
         <table id="scheduleTable">
@@ -165,21 +118,78 @@
         "Sábado": { 8: "ROSARIO-MATEO-MIGUEL", 12: "ROSARIO-MATEO-MIGUEL", 14: "ROSARIO-MATEO-MIGUEL" }
     };
 
-    const materias = [
-        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18:00-20:00", a: "5-105", row: 18, span: 2 },
-        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12:00-14:00", a: "5-102", row: 12, span: 2 },
-        { d: "BAYARDO EMILIO CADAVID", m: "SIS. AUTO. CONTROL", dia: "Martes", h: "20:00-22:00", a: "5-102", row: 20, span: 2 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06:00-08:00", a: "5-202", row: 6, span: 2 },
-        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08:00-12:00", a: "5-202", row: 8, span: 4 }
+    const materiasData = [
+        // 06:00 - 08:00
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6, dur: 2 },
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Martes", h: "06-08", a: "5-104", start: 6, dur: 2 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6, dur: 2 },
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Jueves", h: "06-08", a: "5-104", start: 6, dur: 2 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Viernes", h: "06-08", a: "5-102", start: 6, dur: 2 },
+        { d: "RUBEN DARIO ECHAVARRIA", m: "ELEC BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6, dur: 2 },
+
+        // 08:00 - 12:00
+        { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8, dur: 3 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIG", dia: "Sábado", h: "08-12", a: "5-102", start: 8, dur: 4 },
+        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELEC", dia: "Sábado", h: "08-12", a: "5-202", start: 8, dur: 4 },
+
+        // 12:00 - 14:00
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Lunes", h: "12-14", a: "5-102", start: 12, dur: 2 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIG", dia: "Martes", h: "12-14", a: "5-102", start: 12, dur: 2 },
+        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Jueves", h: "12-14", a: "5-102", start: 12, dur: 2 },
+        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Sábado", h: "12-14", a: "5-104", start: 12, dur: 2 },
+
+        // 14:00 - 16:00
+        { d: "RAMIRO ANTONIO LOPERA", m: "INTRO FAB SOST", dia: "Martes", h: "14-16", a: "5-102", start: 14, dur: 2 },
+        { d: "JULIO RESTREPO", m: "TFD I", dia: "Jueves", h: "14-16", a: "5-105", start: 14, dur: 2 },
+        { d: "RAUL BEDOYA", m: "MEC CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 12, dur: 4 },
+        { d: "JULIO RESTREPO", m: "TFD I", dia: "Sábado", h: "12-16", a: "5-105", start: 12, dur: 4 },
+
+        // 16:00 - 18:00
+        { d: "CRISTIAN CORTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "16-18", a: "5-102", start: 16, dur: 2 },
+
+        // 18:00 - 20:00 (Bloque pesado)
+        { d: "SIN DOCENTE", m: "CIR DIG LAB", dia: "Lunes", h: "18-20", a: "5-104", start: 18, dur: 2 },
+        { d: "DIEGO OROZCO", m: "CIRCUITOS ELEC", dia: "Lunes", h: "18-20", a: "5-102", start: 18, dur: 2 },
+        { d: "VICTOR CIFUENTES", m: "CIRCUITOS DIG", dia: "Lunes", h: "18-20", a: "5-105", start: 18, dur: 2 },
+        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18, dur: 2 },
+        
+        { d: "EDGAR BETANCUR", m: "EII LAB", dia: "Martes", h: "18-20", a: "5-102", start: 18, dur: 2 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18, dur: 2 },
+        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Martes", h: "18-20", a: "5-105", start: 18, dur: 2 },
+
+        { d: "JUAN CARLOS RIVERA", m: "EST RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18, dur: 2 },
+
+        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "18-20", a: "5-104", start: 18, dur: 2 },
+        { d: "JUAN CARLOS RIVERA", m: "DIS ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18, dur: 2 },
+        { d: "SANDRA ALVAREZ", m: "CTRL IND LAB", dia: "Jueves", h: "18-20", a: "5-105", start: 18, dur: 2 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18, dur: 2 },
+
+        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROL", dia: "Viernes", h: "18-20", a: "5-105", start: 18, dur: 2 },
+        { d: "RAUL BEDOYA", m: "DIB TEC 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18, dur: 2 },
+        { d: "JULIO RESTREPO", m: "ITS MECAT", dia: "Viernes", h: "18-22", a: "5-202", start: 18, dur: 4 },
+        { d: "DERFREY DUQUE", m: "ITS SIST DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 18, dur: 4 },
+
+        // 20:00 - 22:00
+        { d: "JHON JAIRO RUEDA", m: "SERVOMEC", dia: "Lunes", h: "20-22", a: "5-104", start: 20, dur: 2 },
+        { d: "JOSE PULGARIN", m: "CIR DIG", dia: "Lunes", h: "20-22", a: "5-102", start: 20, dur: 2 },
+        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Martes", h: "20-22", a: "5-102", start: 20, dur: 2 },
+        { d: "JUAN ZULUAGA", m: "REDES", dia: "Martes", h: "20-22", a: "5-202", start: 20, dur: 2 },
+        { d: "HECTOR TABORDA", m: "INST IND", dia: "Martes", h: "20-22", a: "5-105", start: 20, dur: 2 },
+
+        { d: "DIEGO OROZCO", m: "CIR ELEC", dia: "Miércoles", h: "18-22", a: "5-102", start: 20, dur: 2 },
+        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Miércoles", h: "20-22", a: "5-104", start: 20, dur: 2 },
+        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Miércoles", h: "20-22", a: "5-105", start: 20, dur: 2 },
+
+        { d: "DERFREY DUQUE", m: "INSTRUM", dia: "Jueves", h: "20-22", a: "5-104", start: 20, dur: 2 },
+        { d: "HECTOR TABORDA", m: "INST IND", dia: "Jueves", h: "20-22", a: "5-105", start: 20, dur: 2 },
+        { d: "BAYARDO CADAVID", m: "SIS CTRL", dia: "Jueves", h: "20-22", a: "5-102", start: 20, dur: 2 },
+        { d: "JUAN ZULUAGA", m: "REDES", dia: "Jueves", h: "20-22", a: "5-202", start: 20, dur: 2 },
+
+        { d: "LUIS ZULETA", m: "COM I LAB", dia: "Viernes", h: "20-22", a: "5-104", start: 20, dur: 2 },
+        { d: "CARLOS VALENCIA", m: "APL MICRO", dia: "Viernes", h: "20-22", a: "5-105", start: 20, dur: 2 }
     ];
 
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-
-    function getHourLabel(h) {
-        if (h < 12) return `${h}-${h+1} AM`;
-        if (h === 12) return `12-13 PM`;
-        return `${h}-${h+1} PM`;
-    }
 
     function initTable() {
         const tbody = document.getElementById('scheduleBody');
@@ -187,12 +197,13 @@
             const row = document.createElement('tr');
             const hourCell = document.createElement('td');
             hourCell.className = 'hour-col';
-            hourCell.innerText = getHourLabel(h);
+            hourCell.innerText = h < 12 ? `${h}-${h+1} AM` : `${h}-${h+1} PM`;
             row.appendChild(hourCell);
 
             dias.forEach(dia => {
                 const cell = document.createElement('td');
                 cell.id = `cell-${dia}-${h}`;
+                cell.innerHTML = '<div class="cell-content"></div>';
                 row.appendChild(cell);
             });
             tbody.appendChild(row);
@@ -201,27 +212,28 @@
     }
 
     function renderMaterias() {
-        materias.forEach(m => {
-            const cell = document.getElementById(`cell-${m.dia}-${m.row}`);
-            if (cell) {
-                cell.rowSpan = m.span;
-                for(let i=1; i<m.span; i++) {
-                    const extra = document.getElementById(`cell-${m.dia}-${m.row + i}`);
-                    if(extra) extra.style.display = 'none';
-                }
-                const labTurno = (laboratoristas[m.dia] && laboratoristas[m.dia][m.row]) || "VER TABLA";
-                cell.innerHTML = `
-                    <div class="materia-block">
-                        <strong>${m.m}</strong>
-                        <span class="aula-badge">${m.a}</span>
+        materiasData.forEach(m => {
+            for (let i = 0; i < m.dur; i++) {
+                const currentHour = m.start + i;
+                const cell = document.getElementById(`cell-${m.dia}-${currentHour}`);
+                if (cell) {
+                    const content = cell.querySelector('.cell-content');
+                    const lab = (laboratoristas[m.dia] && laboratoristas[m.dia][m.start]) || "POR DEF";
+                    
+                    const block = document.createElement('div');
+                    block.className = 'materia-block';
+                    block.innerHTML = `
+                        <strong>${m.m}</strong> <span class="aula-badge">${m.a}</span>
                         <div class="hover-card">
                             <b style="color:#3b82f6">${m.m}</b><br>
-                            <small>👨‍🏫 ${m.d}</small><br>
-                            <small>🕒 ${m.h}</small>
-                            <div class="lab-tag">🛠️ LAB: ${labTurno}</div>
+                            👨‍🏫 Docente: ${m.d}<br>
+                            🕒 Horario: ${m.h}<br>
+                            📍 Aula: ${m.a}
+                            <div class="lab-tag">🛠️ LAB: ${lab}</div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    content.appendChild(block);
+                }
             }
         });
     }
