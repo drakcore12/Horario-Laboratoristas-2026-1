@@ -1,8 +1,23 @@
 const infoCells = {};
 
+function toggleFilters() {
+    const section = document.getElementById('filterSection');
+    const btn = document.getElementById('toggleFiltersBtn');
+    if (!section || !btn) return;
+
+    section.classList.toggle('collapsed');
+
+    if (section.classList.contains('collapsed')) {
+        btn.innerHTML = '<span>🔍</span> Filtrar Horario';
+    } else {
+        btn.innerHTML = '<span>✕</span> Cerrar Filtros';
+    }
+}
+
 function shortM(name) {
     return name
         .replace(/CIRCUITOS/g, "C.")
+        // ... (rest of shortM)
         .replace(/DIGITALES/g, "DIG.")
         .replace(/MICROCONTROLADORES/g, "MICRO.")
         .replace(/APL /g, "A. ")
@@ -127,6 +142,8 @@ function setupFilters() {
     const selDocente = document.getElementById('filterDocente');
     const selLab = document.getElementById('filterLab');
 
+    if (!selMateria || !selDocente || !selLab) return;
+
     // Unique values
     const uniqueMaterias = [...new Set(materiasData.map(m => m.m))].sort();
     const uniqueDocentes = [...new Set(materiasData.map(m => m.d))].sort();
@@ -160,17 +177,6 @@ function clearFilters() {
     highlightCurrentSlot();
 }
 
-function toggleFilters() {
-    const section = document.getElementById('filterSection');
-    const btn = document.getElementById('toggleFiltersBtn');
-    section.classList.toggle('collapsed');
-
-    if (section.classList.contains('collapsed')) {
-        btn.innerHTML = '<span>🔍</span> Filtrar Horario';
-    } else {
-        btn.innerHTML = '<span>✕</span> Cerrar Filtros';
-    }
-}
 
 // Initializing the table when the scripts are loaded
 setupFilters();
