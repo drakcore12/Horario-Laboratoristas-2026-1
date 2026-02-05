@@ -30,11 +30,15 @@ body {
     padding: 10px 16px;
     max-width: 1200px;
     margin: 0 auto;
+    padding-bottom: 20px;
+    /* Espacio inferior para que no toque el borde */
 }
 
 @media (max-width: 650px) {
     .container {
         padding: 6px 10px;
+        padding-bottom: 20px;
+        /* Margen inferior en móvil */
     }
 }
 
@@ -73,25 +77,31 @@ p.subtitle {
     flex: 1;
     background: var(--bg-card);
     border-radius: 8px;
-    /* Bordes más suaves */
     border: 1px solid var(--border);
     overflow: auto;
-    display: flex;
-    justify-content: center;
-    /* Centrar tabla dentro del wrapper */
+    display: block;
+    /* Mejor scroll nativo */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 table {
     width: 100%;
-    min-width: 600px;
+    min-width: 100%;
+    /* Ocupa al menos el 100% */
     border-collapse: collapse;
     table-layout: fixed;
 }
 
 @media (max-width: 450px) {
+
+    /* Mínimo ancho absoluto para asegurar legibilidad */
     table {
-        min-width: 500px;
+        min-width: 350px;
+    }
+
+    /* Reducir layout fixed */
+    table {
+        table-layout: auto;
     }
 }
 
@@ -214,6 +224,49 @@ td {
     align-items: center;
     justify-content: center;
     gap: 6px;
+}
+
+@media (min-width: 1024px) {
+
+    /* Mejoras para escritorio */
+    .container {
+        max-width: 1400px;
+        /* Aprovechar pantallas anchas */
+        padding: 20px 40px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    table {
+        min-width: 100%;
+        font-size: 11px;
+    }
+
+    th {
+        height: 35px;
+        font-size: 11px;
+    }
+
+    td {
+        height: 38px;
+        /* Altura reducida para evitar scroll */
+    }
+
+    .materia-block {
+        font-size: 10px;
+        padding-left: 6px;
+        border-left-width: 3px;
+        line-height: 1.1;
+        /* Más compacto */
+    }
+
+    .hour-col {
+        width: 60px;
+        font-size: 11px;
+    }
 }
 
 @media (max-width: 600px) {
