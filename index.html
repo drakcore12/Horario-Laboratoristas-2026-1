@@ -16,20 +16,18 @@
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background-color: var(--bg);
-            margin: 0; padding: 20px;
+            margin: 0; padding: 10px;
             color: #1e293b;
         }
 
         .container { max-width: 1300px; margin: 0 auto; }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 5px; }
-        p.subtitle { text-align: center; margin-bottom: 20px; color: #64748b; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 2px; font-size: 1.5rem; }
+        p.subtitle { text-align: center; margin-bottom: 15px; color: #64748b; font-size: 0.9rem; }
 
-        /* Contenedor de tabla ajustable */
         .table-wrapper {
             background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            /* ELIMINADO overflow: hidden para que el hover no se corte */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border);
             position: relative;
         }
@@ -37,92 +35,99 @@
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            table-layout: fixed; /* Columnas de igual ancho */
+            table-layout: fixed;
         }
 
         th { 
             background: var(--primary); 
             color: white; 
-            padding: 12px; 
-            font-size: 13px; 
+            padding: 8px; 
+            font-size: 12px; 
             border: 1px solid #334155;
         }
 
         td { 
-            height: 50px; 
+            height: 35px; /* Altura disminuida */
             border: 1px solid var(--border); 
             vertical-align: top; 
-            padding: 5px; 
-            position: relative; /* Base para el hover card */
+            padding: 2px; 
+            position: relative;
         }
 
         .hour-col { 
-            width: 90px; 
+            width: 100px; 
             background: #f8fafc; 
             font-weight: bold; 
             text-align: center; 
-            font-size: 12px;
+            font-size: 10px;
+            vertical-align: middle;
+            color: #475569;
         }
 
-        /* Bloque de Materia */
         .materia-block {
             background: #eff6ff;
-            border-left: 4px solid var(--accent);
-            padding: 8px;
+            border-left: 3px solid var(--accent);
+            padding: 4px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             cursor: help;
-            height: calc(100% - 10px);
+            height: calc(100% - 6px);
             display: flex;
             flex-direction: column;
             justify-content: center;
+            overflow: hidden;
+        }
+
+        .materia-block strong {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .materia-block:hover { background: #dbeafe; }
 
-        /* Hover Card Corregido */
         .hover-card {
             visibility: hidden;
-            width: 260px;
+            width: 240px;
             background: #1e293b;
             color: white;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 12px;
             position: absolute;
-            z-index: 9999; /* Por encima de todo */
+            z-index: 9999;
             top: 50%;
-            left: 105%; /* Aparece a la derecha para evitar cortes */
+            left: 105%;
             transform: translateY(-50%);
             opacity: 0;
-            transition: all 0.2s ease;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            transition: opacity 0.2s ease;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
             pointer-events: none;
+            font-size: 12px;
         }
 
         .materia-block:hover .hover-card {
             visibility: visible;
             opacity: 1;
-            left: 110%;
         }
 
-        /* Tags dentro del hover */
         .lab-tag {
             background: #fbbf24;
             color: #000;
-            padding: 4px 8px;
-            border-radius: 5px;
+            padding: 3px 6px;
+            border-radius: 4px;
             font-weight: bold;
             display: block;
-            margin-top: 10px;
-            font-size: 11px;
+            margin-top: 8px;
+            font-size: 10px;
         }
 
         .aula-badge {
             background: #334155;
             color: #fff;
-            padding: 2px 5px;
+            padding: 1px 4px;
             border-radius: 3px;
-            font-size: 10px;
+            font-size: 9px;
+            width: fit-content;
         }
     </style>
 </head>
@@ -136,7 +141,7 @@
         <table id="scheduleTable">
             <thead>
                 <tr>
-                    <th class="hour-col">Hora</th>
+                    <th class="hour-col">HORAS</th>
                     <th>Lunes</th>
                     <th>Martes</th>
                     <th>Miércoles</th>
@@ -145,8 +150,7 @@
                     <th>Sábado</th>
                 </tr>
             </thead>
-            <tbody id="scheduleBody">
-                </tbody>
+            <tbody id="scheduleBody"></tbody>
         </table>
     </div>
 </div>
@@ -171,25 +175,26 @@
 
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
+    function getHourLabel(h) {
+        if (h < 12) return `${h}-${h+1} AM`;
+        if (h === 12) return `12-13 PM`;
+        return `${h}-${h+1} PM`;
+    }
+
     function initTable() {
         const tbody = document.getElementById('scheduleBody');
-        
         for (let h = 6; h <= 21; h++) {
             const row = document.createElement('tr');
-            
-            // Columna Hora
             const hourCell = document.createElement('td');
             hourCell.className = 'hour-col';
-            hourCell.innerText = `${h}:00`;
+            hourCell.innerText = getHourLabel(h);
             row.appendChild(hourCell);
 
-            // Columnas Días
             dias.forEach(dia => {
                 const cell = document.createElement('td');
                 cell.id = `cell-${dia}-${h}`;
                 row.appendChild(cell);
             });
-            
             tbody.appendChild(row);
         }
         renderMaterias();
@@ -199,26 +204,20 @@
         materias.forEach(m => {
             const cell = document.getElementById(`cell-${m.dia}-${m.row}`);
             if (cell) {
-                // Ajustar el alto según la duración
                 cell.rowSpan = m.span;
-                // Borrar celdas sobrantes (opcional para limpieza)
                 for(let i=1; i<m.span; i++) {
                     const extra = document.getElementById(`cell-${m.dia}-${m.row + i}`);
                     if(extra) extra.style.display = 'none';
                 }
-
                 const labTurno = (laboratoristas[m.dia] && laboratoristas[m.dia][m.row]) || "VER TABLA";
-
                 cell.innerHTML = `
                     <div class="materia-block">
                         <strong>${m.m}</strong>
                         <span class="aula-badge">${m.a}</span>
-                        
                         <div class="hover-card">
-                            <span style="color:#94a3b8; font-size:10px">DOCENTE</span>
-                            <div style="margin-bottom:8px">${m.d}</div>
-                            <span style="color:#94a3b8; font-size:10px">HORARIO</span>
-                            <div>${m.h}</div>
+                            <b style="color:#3b82f6">${m.m}</b><br>
+                            <small>👨‍🏫 ${m.d}</small><br>
+                            <small>🕒 ${m.h}</small>
                             <div class="lab-tag">🛠️ LAB: ${labTurno}</div>
                         </div>
                     </div>
@@ -226,9 +225,7 @@
             }
         });
     }
-
     initTable();
 </script>
-
 </body>
 </html>
