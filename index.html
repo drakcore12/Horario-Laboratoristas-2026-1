@@ -1,436 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Horario Electrónica 2026-1</title>
-    <style>
-        :root {
-            --bg-main: #020617;
-            --bg-card: #0f172a;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --border: #1e293b;
-        }
-
-        * { box-sizing: border-box; }
-
-        html, body { 
-            height: 100%; width: 100vw;
-            margin: 0; padding: 0; 
-            overflow: hidden; 
-            background-color: var(--bg-main);
-            font-family: 'Inter', system-ui, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .container { 
-            height: 100vh;
-            display: flex; flex-direction: column; 
-            padding: 2px 4px;
-        }
-
-        h1 { 
-            text-align: center; font-weight: 800; font-size: 1rem; margin: 2px 0;
-            background: linear-gradient(to right, #60a5fa, #3b82f6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        p.subtitle { 
-            text-align: center; margin: 0 0 2px 0; color: var(--text-muted); 
-            font-size: 0.7rem; 
-        }
-
-        .table-wrapper {
-            flex: 1;
-            background: var(--bg-card);
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            overflow: auto;
-            display: flex;
-            justify-content: flex-start; /* Permite scroll horizontal natural */
-        }
-
-        table { 
-            width: 100%; 
-            min-width: 700px; /* Un poco más de aire para las abreviaturas */
-            border-collapse: collapse; 
-            table-layout: fixed;
-        }
-
-        th { 
-            background: #1e293b; color: var(--text-muted); 
-            height: 24px; 
-            font-size: 10px;
-            text-transform: uppercase;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 20;
-        }
-
-        td { 
-            height: 34px; 
-            border: 0.1px solid var(--border); 
-            vertical-align: top; 
-            position: relative; 
-        }
-
-        .cell-container { width: 100%; height: 100%; padding: 2px; cursor: pointer; }
-        .cell-container:active { background: rgba(59, 130, 246, 0.1); } /* Feedback táctil */
-
-        .hour-col { 
-            width: 50px; 
-            background: #0f172a; font-weight: 700; text-align: center; 
-            font-size: 10px; 
-            color: var(--accent); border-right: 1.5px solid var(--border);
-            vertical-align: middle;
-            position: sticky; left: 0; z-index: 10;
-        }
-
-        .cell-content { display: flex; flex-direction: column; gap: 1px; height: 100%; overflow: hidden; }
-
-        .materia-block {
-            display: flex; 
-            justify-content: flex-start;
-            align-items: center;
-            padding-left: 3px; border-left: 2px solid var(--accent);
-            font-size: 9px; 
-            font-weight: 600; color: var(--text-main); 
-            white-space: nowrap; overflow: hidden;
-            line-height: 1.2;
-            margin-bottom: 1px;
-        }
-
-        .materia-block span:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .aula-badge { 
-            flex-shrink: 0;
-            font-size: 8px; 
-            color: var(--accent); padding: 0px 2px;
-            background: rgba(59, 130, 246, 0.15); border-radius: 2px; 
-            margin-left: 3px;
-        }
-
-        /* MODAL OPTIMIZADO */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.85);
-            z-index: 9990; backdrop-filter: blur(4px);
-        }
-        .custom-modal {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85vw; max-width: 350px;
-            background: var(--bg-card); border: 1px solid var(--accent);
-            border-radius: 12px; padding: 20px;
-            z-index: 9999; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        body.modal-open .modal-overlay, body.modal-open .custom-modal { display: block; }
-        .custom-modal b { font-size: 1rem; color: var(--accent); display: block; margin-bottom: 4px; }
-        .custom-modal small { font-size: 0.85rem; color: var(--text-main); display: block; margin-bottom: 10px; }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; color: var(--text-muted); cursor: pointer; }
-        .lab-tag { background: #f59e0b; color: #000; padding: 4px 12px; border-radius: 4px; font-weight: 800; font-size: 11px; margin-top: 5px; display: inline-block; }
-        
-        hr { border: 0; border-top: 1px solid var(--border); margin: 10px 0; }
-.lab-dots {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 2px;
-}
-
-.lab-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-/* Color para las filas PARES */
-#scheduleBody tr:nth-child(even) {
-    background-color: rgba(30, 41, 59, 0.5); /* Un tono ligeramente más claro que el fondo */
-}
-
-/* Asegurar que la columna de la HORA también cambie de color en las filas pares */
-#scheduleBody tr:nth-child(even) .hour-col {
-    background-color: #1a2333; /* Un azul muy oscuro para mantener el contraste */
-}
-
-/* Color para las filas IMPARES (opcional, para mayor control) */
-#scheduleBody tr:nth-child(odd) {
-    background-color: var(--bg-card);
-}
-/* Colores por laboratorista */
-.lab-Rosario  { background: #f97316; } /* naranja */
-.lab-Anderson { background: #22c55e; } /* verde */
-.lab-Camilo   { background: #3b82f6; } /* azul */
-.lab-Mateo    { background: #a855f7; } /* morado */
-.lab-Miguel   { background: #ef4444; } /* rojo */
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
-<div class="custom-modal" id="infoModal">
-    <span class="close-btn" onclick="closeModal()">×</span>
-    <div id="modalBody"></div>
-</div>
-
-<div class="container">
-    <h1>Horario Electrónica B5</h1>
-    <p class="subtitle">Gestión 2026-1</p>
-
-    <div class="table-wrapper">
-        <table id="scheduleTable">
-            <thead>
-                <tr>
-                    <th class="hour-col">HORA</th>
-                    <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th>
-                </tr>
-            </thead>
-            <tbody id="scheduleBody"></tbody>
-        </table>
+    <div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="custom-modal" id="infoModal">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <div id="modalBody"></div>
     </div>
-</div>
 
-<script>
+    <div class="container">
+        <h1>Horario Electrónica B5</h1>
+        <p class="subtitle">Gestión 2026-1</p>
 
-const laboratoristas = {
-  "Lunes": {
-    6:  "Rosario-Mateo",
-    8:  "Rosario-Mateo",
-    10: "Rosario-Mateo-Anderson",
-    12: "Rosario-Camilo",
-    14: "Camilo",
-    16: "Camilo",
-    18: "Camilo-Anderson",
-    20: "Camilo-Anderson"
-  },
+        <div class="legend-container" id="legend"></div>
 
-  "Martes": {
-    6:  "Rosario-Miguel",
-    8:  "Rosario-Miguel",
-    10: "Rosario-Miguel",
-    12: "Rosario-Miguel-Mateo",
-    14: "Camilo",
-    16: "Anderson-Mateo",
-    18: "Camilo-Anderson-Mateo",
-    20: "Camilo-Anderson-Mateo"
-  },
+        <div class="filter-section">
+            <div class="filter-group">
+                <label for="filterMateria">Materia</label>
+                <select id="filterMateria">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterDocente">Profesor</label>
+                <select id="filterDocente">
+                    <option value="all">Todos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterLab">Laboratorista</label>
+                <select id="filterLab">
+                    <option value="all">Todos</option>
+                </select>
+            </div>
+            <button class="btn-clear" onclick="clearFilters()">Limpiar</button>
+        </div>
 
-  "Miércoles": {
-    6:  "Miguel",
-    8:  "Miguel-Anderson",
-    10: "Miguel-Anderson",
-    12: "Miguel",
-    14: "Camilo-Anderson",
-    16: "Camilo",
-    18: "Camilo-Anderson-Mateo",
-    20: "Camilo-Anderson"
-  },
-
-  "Jueves": {
-    6:  "Rosario-Miguel",
-    8:  "Rosario-Miguel-Anderson",
-    10: "Rosario-Miguel-Anderson",
-    12: "Rosario-Miguel-Camilo",
-    14: "Camilo",
-    16: "Anderson-Mateo",
-    18: "Camilo-Anderson-Mateo",
-    20: "Camilo-Anderson-Mateo"
-  },
-
-  "Viernes": {
-    6:  "Rosario-Miguel",
-    8:  "Rosario-Miguel-Anderson",
-    10: "Rosario-Miguel",
-    12: "Rosario-Anderson-Camilo",
-    14: "Anderson-Camilo-Mateo",
-    16: "Anderson-Camilo",
-    18: "Mateo-Miguel",
-    20: "Mateo-Camilo"
-  },
-
-  "Sábado": {
-    6:  "Rosario-Mateo",
-    8:  "Rosario-Miguel-Mateo",
-    10: "Rosario-Miguel-Mateo",
-    12: "Rosario-Miguel-Mateo",
-    14: "Rosario-Miguel-Mateo",
-    16: "Rosario-Mateo",
-    18: "Mateo-Miguel",
-    20: "Mateo-Camilo"
-  }
-};
-
-
-
-    const materiasData = [
-        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
-        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12-14", a: "5-102", start: 12 },
-        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Martes", h: "12-14", a: "5-102", start: 12 },
-        { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Martes", h: "20-22", a: "5-102", start: 20 },
-        { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Jueves", h: "20-22", a: "5-102", start: 20 },
-        { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Miércoles", h: "20-22", a: "5-105", start: 20 },
-        { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Viernes", h: "20-22", a: "5-105", start: 20 },
-        { d: "CRISTIAN CORTES CHICA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "16-18", a: "5-102", start: 16 },
-        { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 18 },
-        { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 20 },
-        { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "18-20", a: "5-104", start: 18 },
-        { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "20-22", a: "5-104", start: 20 },
-        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Lunes", h: "18-20", a: "5-102", start: 18 },
-        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 18 },
-        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 20 },
-        { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Martes", h: "18-20", a: "5-102", start: 18 },
-        { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Sábado", h: "14-16", a: "5-102", start: 14 },
-        { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Martes", h: "20-22", a: "5-105", start: 20 },
-        { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Jueves", h: "20-22", a: "5-105", start: 20 },
-        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 8 },
-        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 10 },
-        { d: "JHON JAIRO RUEDA", m: "SERVOMECANISMOS", dia: "Lunes", h: "20-22", a: "5-104", start: 20 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "20-22", a: "5-102", start: 20 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Viernes", h: "06-08", a: "5-102", start: 6 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 8 },
-        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 10 },
-        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Martes", h: "06-08", a: "5-202", start: 6 },
-        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18 },
-        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Jueves", h: "06-08", a: "5-202", start: 6 },
-        { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18 },
-        { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18 },
-        { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Martes", h: "20-22", a: "5-202", start: 20 },
-        { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Jueves", h: "20-22", a: "5-202", start: 20 },
-        { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8 },
-        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Jueves", h: "14-16", a: "5-105", start: 14 },
-        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 12 },
-        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 14 },
-        { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 18 },
-        { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 20 },
-        { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Miércoles", h: "20-22", a: "5-104", start: 20 },
-        { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Viernes", h: "20-22", a: "5-104", start: 20 },
-        { d: "RAMIRO ANTONIO LOPERA", m: "FABRICACIÓN SOSTENIBLE", dia: "Martes", h: "14-16", a: "5-102", start: 14 },
-        { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 12 },
-        { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 14 },
-        { d: "RAUL ALBERTO BEDOYA", m: "DIBUJO TÉCNICO 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18 },
-        { d: "RUBEN DARIO ECHAVARRIA", m: "ELECTRONICA BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6 },
-        { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Martes", h: "18-20", a: "5-105", start: 18 },
-        { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Jueves", h: "18-20", a: "5-105", start: 18 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6 },
-        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18 },
-        { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "18-20", a: "5-105", start: 18 },
-        { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Jueves", h: "12-14", a: "5-102", start: 12 },
-        { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Lunes", h: "18-20", a: "5-104", start: 18 },
-        { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Sábado", h: "12-14", a: "5-104", start: 12 }
-    ];
-
-    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const infoCells = {};
-
-    function shortM(name) {
-        return name
-            .replace(/CIRCUITOS/g, "C.")
-            .replace(/DIGITALES/g, "DIG.")
-            .replace(/MICROCONTROLADORES/g, "MICRO.")
-            .replace(/APL /g, "A. ")
-            .replace(/ELECTRÓNICOS/g, "ELEC.")
-            .replace(/ELÉCTRICOS/g, "ELÉC.")
-            .replace(/INSTRUMENTACIÓN/g, "INSTRUM.")
-            .replace(/INDUSTRIAL/g, "IND.")
-            .replace(/SISTEMAS/g, "SIST.")
-            .replace(/AUTOMÁTICOS/g, "AUTO.")
-            .replace(/MECATRÓNICOS/g, "MECAT.")
-            .replace(/FABRICACIÓN/g, "FAB.")
-            .replace(/SOSTENIBLE/g, "SOST.")
-            .replace(/COMUNICACIONES/g, "COMUN.")
-            .replace(/CONMUTACION/g, "CONMUT.")
-            .replace(/SERVOMECANISMOS/g, "SERVO.")
-            .replace(/DISEÑO ELEM MAQ/g, "D.E.M.")
-            .replace(/INTRO /g, "I. ");
-    }
-
-    function initTable() {
-        const tbody = document.getElementById('scheduleBody');
-        tbody.innerHTML = "";
-        for (let h = 6; h <= 20; h += 2) {
-            const row = document.createElement('tr');
-            const hCol = document.createElement('td');
-            hCol.className = 'hour-col';
-            hCol.innerText = `${h}-${h+2}`;
-            row.appendChild(hCol);
-
-            dias.forEach(dia => {
-                const cellId = `cell-${dia}-${h}`;
-                const cell = document.createElement('td');
-                const lab = (laboratoristas[dia] && laboratoristas[dia][h]) || "---";
-                infoCells[cellId] = { materias: [], lab: lab, hora: `${h}-${h+2}`, dia: dia };
-                
-                cell.innerHTML = `
-  <div class="cell-container" onclick="openModal('${cellId}')">
-    ${renderLabDots(lab)}
-    <div class="cell-content" id="content-${cellId}"></div>
-  </div>`;
-
-                row.appendChild(cell);
-            });
-            tbody.appendChild(row);
-        }
-        renderMaterias();
-    }
-
-    function renderMaterias() {
-        materiasData.forEach(m => {
-            const blockStart = m.start % 2 === 0 ? m.start : m.start - 1;
-            const cellId = `cell-${m.dia}-${blockStart}`;
-            const container = document.getElementById(`content-${cellId}`);
-            if (container) {
-                infoCells[cellId].materias.push(m);
-                const block = document.createElement('div');
-                block.className = 'materia-block';
-                block.innerHTML = `<span>${shortM(m.m)}</span><span class="aula-badge">${m.a}</span>`;
-                container.appendChild(block);
-            }
-        });
-    }
-
-    function openModal(cellId) {
-        const data = infoCells[cellId];
-        const modalBody = document.getElementById('modalBody');
-        let html = `<p style="color:var(--text-muted); font-size:0.8rem; margin-top:-10px; margin-bottom:15px;">${data.dia} | ${data.hora}</p>`;
-        
-        if (data.materias.length === 0) {
-            html += "<b>ESPACIO LIBRE</b><small>No hay clases programadas</small>";
-        } else {
-            data.materias.forEach((m, index) => {
-                html += `<div><b>${m.m}</b><small>${m.d}<br>AULA: ${m.a}</small></div>`;
-                if(index < data.materias.length - 1) html += "<hr>";
-            });
-        }
-        html += `<div class="lab-tag">🛠️ LAB: ${data.lab}</div>`;
-        modalBody.innerHTML = html;
-        document.body.classList.add('modal-open');
-    }
-
-    function closeModal() { document.body.classList.remove('modal-open'); }
-    
-    initTable();
-
-function renderLabDots(labString) {
-  if (!labString || labString === "---") return "";
-
-  return `
-    <div class="lab-dots">
-      ${labString.split("-").map(name =>
-        `<span class="lab-dot lab-${name}"></span>`
-      ).join("")}
+        <div class="table-wrapper">
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th class="hour-col">HORA</th>
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mié</th>
+                        <th>Jue</th>
+                        <th>Vie</th>
+                        <th>Sáb</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody"></tbody>
+            </table>
+        </div>
     </div>
-  `;
-}
 
-</script>
+    <script src="constants.js"></script>
+    <script src="script.js"></script>
 </body>
-</html>
 
+</html>

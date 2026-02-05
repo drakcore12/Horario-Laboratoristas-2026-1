@@ -1,0 +1,402 @@
+:root {
+    --bg-main: #020617;
+    --bg-card: #0f172a;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --border: #1e293b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--bg-main);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px;
+    /* Aumentar márgenes laterales */
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Centrar contenedor en pantallas grandes */
+}
+
+h1 {
+    text-align: center;
+    font-weight: 800;
+    font-size: 1rem;
+    margin: 2px 0;
+    background: linear-gradient(to right, #60a5fa, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+p.subtitle {
+    text-align: center;
+    margin: 0 0 2px 0;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+}
+
+.table-wrapper {
+    flex: 1;
+    background: var(--bg-card);
+    border-radius: 8px;
+    /* Bordes más suaves */
+    border: 1px solid var(--border);
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    /* Centrar tabla dentro del wrapper */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+table {
+    width: 100%;
+    min-width: 700px;
+    /* Un poco más de aire para las abreviaturas */
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th {
+    background: #1e293b;
+    color: var(--text-muted);
+    height: 24px;
+    font-size: 10px;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+td {
+    height: 34px;
+    border: 0.1px solid var(--border);
+    vertical-align: top;
+    position: relative;
+}
+
+.cell-container {
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.cell-container:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cell-container:active {
+    background: rgba(59, 130, 246, 0.15);
+    transform: scale(0.98);
+}
+
+.hour-col {
+    width: 50px;
+    background: #0f172a;
+    font-weight: 700;
+    text-align: center;
+    font-size: 10px;
+    color: var(--accent);
+    border-right: 1.5px solid var(--border);
+    vertical-align: middle;
+    position: sticky;
+    left: 0;
+    z-index: 10;
+}
+
+.cell-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.materia-block {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 3px;
+    border-left: 2px solid var(--accent);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1.2;
+    margin-bottom: 1px;
+}
+
+/* FILTER SECTION */
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+    background: #1e293b;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-group label {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.filter-group select {
+    background: var(--bg-main);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    border-color: var(--accent);
+}
+
+.btn-clear {
+    align-self: flex-end;
+    padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-clear:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.aula-badge {
+    flex-shrink: 0;
+    font-size: 8px;
+    color: var(--accent);
+    padding: 0px 4px;
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 4px;
+    margin-left: 4px;
+}
+
+/* UX ENHANCEMENTS */
+.cell-now {
+    background: rgba(59, 130, 246, 0.1) !important;
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    z-index: 50;
+}
+
+.cell-now::after {
+    content: "AHORA";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--accent);
+    color: white;
+    font-size: 7px;
+    padding: 1px 3px;
+    font-weight: 900;
+    border-bottom-left-radius: 4px;
+}
+
+.has-class {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.legend-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* MODAL OPTIMIZADO */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9990;
+    backdrop-filter: blur(4px);
+}
+
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85vw;
+    max-width: 350px;
+    background: var(--bg-card);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px;
+    z-index: 9999;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+body.modal-open .modal-overlay,
+body.modal-open .custom-modal {
+    display: block;
+}
+
+.custom-modal b {
+    font-size: 1rem;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.custom-modal small {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.lab-tag {
+    background: #f59e0b;
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 11px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+}
+
+.lab-dots {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 2px;
+}
+
+.lab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Color para las filas PARES */
+#scheduleBody tr:nth-child(even) {
+    background-color: rgba(30, 41, 59, 0.5);
+    /* Un tono ligeramente más claro que el fondo */
+}
+
+/* Asegurar que la columna de la HORA también cambie de color en las filas pares */
+#scheduleBody tr:nth-child(even) .hour-col {
+    background-color: #1a2333;
+    /* Un azul muy oscuro para mantener el contraste */
+}
+
+/* Color para las filas IMPARES (opcional, para mayor control) */
+#scheduleBody tr:nth-child(odd) {
+    background-color: var(--bg-card);
+}
+
+/* Colores por laboratorista */
+.lab-Rosario {
+    background: #f97316;
+}
+
+/* naranja */
+.lab-Anderson {
+    background: #22c55e;
+}
+
+/* verde */
+.lab-Camilo {
+    background: #3b82f6;
+}
+
+/* azul */
+.lab-Mateo {
+    background: #a855f7;
+}
+
+/* morado */
+.lab-Miguel {
+    background: #ef4444;
+}
+
+/* rojo */
