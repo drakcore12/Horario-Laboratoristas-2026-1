@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Horario Electrónica 2026-1</title>
 <style>
     :root {
@@ -23,6 +23,10 @@
         overflow: hidden; 
         background-color: var(--bg-main);
         font-family: 'Inter', system-ui, sans-serif;
+        /* Evita el menú contextual al mantener presionado */
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
     }
 
     .container { 
@@ -47,18 +51,19 @@
         background: var(--bg-card);
         border-radius: 6px;
         border: 1px solid var(--border);
-        overflow: hidden;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
-    table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+    table { width: 100%; height: 100%; min-width: 750px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 
     th { 
         background: #1e293b; color: var(--text-muted); height: 30px;
         font-size: 9px; text-transform: uppercase;
         border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 20;
     }
 
-    /* td sin overflow para permitir que el card "salga" */
     td { 
         height: calc(100% / 8); 
         border: 0.2px solid var(--border); 
@@ -66,24 +71,16 @@
         position: relative; 
     }
 
-    /* .cell-container con overflow para que el texto largo no rompa la tabla */
-    .cell-container { 
-        width: 100%; 
-        height: 100%; 
-        padding: 2px; 
-        overflow: hidden;
-    }
+    .cell-container { width: 100%; height: 100%; padding: 2px; }
 
     .hour-col { 
         width: 60px; background: #0f172a; font-weight: 700; text-align: center; 
         font-size: 9px; color: var(--accent); border-right: 1.5px solid var(--border);
         vertical-align: middle;
+        position: sticky; left: 0; z-index: 10;
     }
 
-    .cell-content { 
-        display: flex; flex-direction: column; gap: 2px; 
-        height: 100%; overflow: hidden; 
-    }
+    .cell-content { display: flex; flex-direction: column; gap: 2px; height: 100%; overflow: hidden; }
 
     .materia-block {
         display: flex; justify-content: space-between; align-items: center;
@@ -97,44 +94,72 @@
         background: rgba(59, 130, 246, 0.1); border-radius: 2px; margin-left: 2px;
     }
 
+    /* --- HOVER CARD (DESKTOP) --- */
     .hover-card {
         visibility: hidden; opacity: 0; width: 220px;
-        background: var(--glass); backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: white; border-radius: 6px; padding: 10px;
+        background: var(--glass); backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white; border-radius: 8px; padding: 12px;
         position: absolute; z-index: 9999; 
-        top: 0; left: 102%; /* Posición por defecto */
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5); pointer-events: none;
-        transition: opacity 0.2s;
+        top: 0; left: 105%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        pointer-events: none;
+        transition: opacity 0.2s, transform 0.2s;
     }
 
-    /* CORRECCIÓN: Evitar que se corte abajo (últimas 2 filas suben) */
-    tr:nth-last-child(1) .hover-card, 
-    tr:nth-last-child(2) .hover-card { 
-        top: auto; 
-        bottom: 0; 
-    }
-
-    /* CORRECCIÓN: Evitar que se corte a la derecha (Viernes y Sábado van a la izquierda) */
-    td:nth-last-child(1) .hover-card, 
-    td:nth-last-child(2) .hover-card { 
-        left: auto; 
-        right: 102%; 
-    }
+    tr:nth-last-child(-n+2) .hover-card { top: auto; bottom: 0; }
+    td:nth-last-child(-n+2) .hover-card { left: auto; right: 105%; }
 
     .cell-container:hover .hover-card { visibility: visible; opacity: 1; }
 
+    /* --- MODAL CENTRAL (MÓVIL) --- */
+    @media (max-width: 768px) {
+        .cell-container:active::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9998;
+        }
+
+        .hover-card {
+            position: fixed;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 85vw;
+            max-width: 300px;
+            height: auto;
+            text-align: center;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            pointer-events: none;
+            right: auto !important;
+            bottom: auto !important;
+        }
+
+        .cell-container:active .hover-card {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 9999;
+        }
+
+        .hover-card b { font-size: 13px !important; display: block; margin-bottom: 4px; color: var(--accent); }
+        .hover-card small { font-size: 11px !important; display: block; line-height: 1.2; }
+    }
+
     .lab-tag {
-        background: #f59e0b; color: #000; padding: 1px 4px; border-radius: 3px;
-        font-weight: 800; font-size: 7px; margin-top: 5px; display: inline-block;
+        background: #f59e0b; color: #000; padding: 2px 8px; border-radius: 4px;
+        font-weight: 800; font-size: 9px; margin-top: 10px; display: inline-block;
     }
 </style>
 </head>
-<body>
+<body ontouchstart="">
 
 <div class="container">
     <h1>Horario Electrónica Bloque 5</h1>
-    <p class="subtitle">Gestión 2026-1</p>
+    <p class="subtitle">Gestión 2026-1 • Mantén presionado para detalles</p>
 
     <div class="table-wrapper">
         <table id="scheduleTable">
@@ -159,87 +184,87 @@
         "Sábado": { 6: "ROS-MAT", 8: "ROS-MAT-MIG", 10: "ROS-MAT-MIG", 12: "ROS-MAT-MIG", 14: "ROS-MAT-MIG", 16: "ROS-MAT", 18: "MAT-MIG", 20: "MAT-CAM" }
     };
 
-// FUNCIÓN DE ABREVIACIÓN COMPLETA PARA ELIMINAR SCROLL
-function shortM(name) {
-    return name
-        .replace(/CIRCUITOS/g, "C.")
-        .replace(/DIGITALES/g, "DIG.")
-        .replace(/MICROCONTROLADORES/g, "MICRO.")
-        .replace(/APL /g, "A. ")
-        .replace(/ELECTRÓNICOS/g, "ELEC.")
-        .replace(/ELÉCTRICOS/g, "ELÉC.")
-        .replace(/INSTRUMENTACIÓN/g, "INSTRUM.")
-        .replace(/INDUSTRIAL/g, "IND.")
-        .replace(/SISTEMAS/g, "SIST.")
-        .replace(/AUTOMÁTICOS/g, "AUTO.")
-        .replace(/MECATRÓNICOS/g, "MECAT.")
-        .replace(/FABRICACIÓN/g, "FAB.")
-        .replace(/SOSTENIBLE/g, "SOST.")
-        .replace(/COMUNICACIONES/g, "COMUN.")
-        .replace(/CONMUTACION/g, "CONMUT.")
-        .replace(/SERVOMECANISMOS/g, "SERVO.")
-        .replace(/DISEÑO ELEM MAQ/g, "DIS. ELEM. MAQ.")
-        .replace(/INTRO /g, "I. ");
-}
+    function shortM(name) {
+        return name
+            .replace(/CIRCUITOS/g, "C.")
+            .replace(/DIGITALES/g, "DIG.")
+            .replace(/MICROCONTROLADORES/g, "MICRO.")
+            .replace(/APL /g, "A. ")
+            .replace(/ELECTRÓNICOS/g, "ELEC.")
+            .replace(/ELÉCTRICOS/g, "ELÉC.")
+            .replace(/INSTRUMENTACIÓN/g, "INSTRUM.")
+            .replace(/INDUSTRIAL/g, "IND.")
+            .replace(/SISTEMAS/g, "SIST.")
+            .replace(/AUTOMÁTICOS/g, "AUTO.")
+            .replace(/MECATRÓNICOS/g, "MECAT.")
+            .replace(/FABRICACIÓN/g, "FAB.")
+            .replace(/SOSTENIBLE/g, "SOST.")
+            .replace(/COMUNICACIONES/g, "COMUN.")
+            .replace(/CONMUTACION/g, "CONMUT.")
+            .replace(/SERVOMECANISMOS/g, "SERVO.")
+            .replace(/DISEÑO ELEM MAQ/g, "DIS. ELEM. MAQ.")
+            .replace(/INTRO /g, "I. ");
+    }
 
-const materiasData = [
-    { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
-    { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12-14", a: "5-102", start: 12 },
-    { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Martes", h: "12-14", a: "5-102", start: 12 },
-    { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Martes", h: "20-22", a: "5-102", start: 20 },
-    { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Jueves", h: "20-22", a: "5-102", start: 20 },
-    { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Miércoles", h: "20-22", a: "5-105", start: 20 },
-    { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Viernes", h: "20-22", a: "5-105", start: 20 },
-    { d: "CRISTIAN CORTES CHICA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "16-18", a: "5-102", start: 16 },
-    { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 18 },
-    { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 20 },
-    { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "18-20", a: "5-104", start: 18 },
-    { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "20-22", a: "5-104", start: 20 },
-    { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Lunes", h: "18-20", a: "5-102", start: 18 },
-    { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 18 },
-    { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 20 },
-    { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Martes", h: "18-20", a: "5-102", start: 18 },
-    { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Sábado", h: "14-16", a: "5-102", start: 14 },
-    { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Martes", h: "20-22", a: "5-105", start: 20 },
-    { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Jueves", h: "20-22", a: "5-105", start: 20 },
-    { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 8 },
-    { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 10 },
-    { d: "JHON JAIRO RUEDA", m: "SERVOMECANISMOS", dia: "Lunes", h: "20-22", a: "5-104", start: 20 },
-    { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "20-22", a: "5-102", start: 20 },
-    { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Viernes", h: "06-08", a: "5-102", start: 6 },
-    { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 8 },
-    { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 10 },
-    { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Martes", h: "06-08", a: "5-202", start: 6 },
-    { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18 },
-    { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Jueves", h: "06-08", a: "5-202", start: 6 },
-    { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18 },
-    { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18 },
-    { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Martes", h: "20-22", a: "5-202", start: 20 },
-    { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Jueves", h: "20-22", a: "5-202", start: 20 },
-    { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8 },
-    { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Jueves", h: "14-16", a: "5-105", start: 14 },
-    { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 12 },
-    { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 14 },
-    { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 18 },
-    { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 20 },
-    { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Miércoles", h: "20-22", a: "5-104", start: 20 },
-    { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Viernes", h: "20-22", a: "5-104", start: 20 },
-    { d: "RAMIRO ANTONIO LOPERA", m: "FABRICACIÓN SOSTENIBLE", dia: "Martes", h: "14-16", a: "5-102", start: 14 },
-    { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 12 },
-    { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 14 },
-    { d: "RAUL ALBERTO BEDOYA", m: "DIBUJO TÉCNICO 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18 },
-    { d: "RUBEN DARIO ECHAVARRIA", m: "ELECTRONICA BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6 },
-    { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Martes", h: "18-20", a: "5-105", start: 18 },
-    { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Jueves", h: "18-20", a: "5-105", start: 18 },
-    { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6 },
-    { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18 },
-    { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6 },
-    { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18 },
-    { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "18-20", a: "5-105", start: 18 },
-    { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Jueves", h: "12-14", a: "5-102", start: 12 },
-    { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Lunes", h: "18-20", a: "5-104", start: 18 },
-    { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Sábado", h: "12-14", a: "5-104", start: 12 }
-];
+    const materiasData = [
+        { d: "ANDRES FELIPE ISAZA", m: "MICROCONTROLADORES", dia: "Viernes", h: "18-20", a: "5-105", start: 18 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "12-14", a: "5-102", start: 12 },
+        { d: "ANDRES FELIPE ISAZA", m: "CIRCUITOS DIGITALES", dia: "Martes", h: "12-14", a: "5-102", start: 12 },
+        { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Martes", h: "20-22", a: "5-102", start: 20 },
+        { d: "BAYARDO EMILIO CADAVID", m: "SISTEMAS AUTO. CONTROL", dia: "Jueves", h: "20-22", a: "5-102", start: 20 },
+        { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Miércoles", h: "20-22", a: "5-105", start: 20 },
+        { d: "CARLOS ALBERTO VALENCIA", m: "APL MICROCONTROLADORES", dia: "Viernes", h: "20-22", a: "5-105", start: 20 },
+        { d: "CRISTIAN CORTES CHICA", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "16-18", a: "5-102", start: 16 },
+        { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 18 },
+        { d: "DERFREY ANTONIO DUQUE", m: "INTRO SISTEMAS DIG", dia: "Viernes", h: "18-22", a: "5-102", start: 20 },
+        { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "18-20", a: "5-104", start: 18 },
+        { d: "DERFREY ANTONIO DUQUE", m: "INSTRUMENTACIÓN", dia: "Jueves", h: "20-22", a: "5-104", start: 20 },
+        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Lunes", h: "18-20", a: "5-102", start: 18 },
+        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 18 },
+        { d: "DIEGO HERNANDO OROZCO", m: "CIRCUITOS ELECTRÓNICOS", dia: "Miércoles", h: "18-22", a: "5-102", start: 20 },
+        { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Martes", h: "18-20", a: "5-102", start: 18 },
+        { d: "EDGAR ALBERTO BETANCUR", m: "ELEC INDUSTRIAL II", dia: "Sábado", h: "14-16", a: "5-102", start: 14 },
+        { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Martes", h: "20-22", a: "5-105", start: 20 },
+        { d: "HECTOR SAHIR TABORDA", m: "INSTRUM. INDUSTRIAL", dia: "Jueves", h: "20-22", a: "5-105", start: 20 },
+        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 8 },
+        { d: "JESUS IGNACIO CALLE", m: "CIRCUITOS ELÉCTRICOS", dia: "Sábado", h: "08-12", a: "5-202", start: 10 },
+        { d: "JHON JAIRO RUEDA", m: "SERVOMECANISMOS", dia: "Lunes", h: "20-22", a: "5-104", start: 20 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "20-22", a: "5-102", start: 20 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Viernes", h: "06-08", a: "5-102", start: 6 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 8 },
+        { d: "JOSE MAURICIO PULGARIN", m: "CIRCUITOS DIGITALES", dia: "Sábado", h: "08-12", a: "5-102", start: 10 },
+        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Martes", h: "06-08", a: "5-202", start: 6 },
+        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Miércoles", h: "18-20", a: "5-104", start: 18 },
+        { d: "JUAN CARLOS RIVERA", m: "EST Y RES MAT", dia: "Jueves", h: "06-08", a: "5-202", start: 6 },
+        { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Lunes", h: "18-20", a: "5-202", start: 18 },
+        { d: "JUAN CARLOS RIVERA", m: "DISEÑO ELEM MAQ", dia: "Jueves", h: "18-20", a: "5-102", start: 18 },
+        { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Martes", h: "20-22", a: "5-202", start: 20 },
+        { d: "JUAN GONZALO ZULUAGA", m: "REDES DE DATOS", dia: "Jueves", h: "20-22", a: "5-202", start: 20 },
+        { d: "JUAN GONZALO ZULUAGA", m: "CONMUTACION", dia: "Sábado", h: "08-11", a: "5-105", start: 8 },
+        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Jueves", h: "14-16", a: "5-105", start: 14 },
+        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 12 },
+        { d: "JULIO PASTOR RESTREPO", m: "FABRICACIÓN DIGITAL I", dia: "Sábado", h: "12-16", a: "5-105", start: 14 },
+        { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 18 },
+        { d: "JULIO PASTOR RESTREPO", m: "ITS MECATRÓNICOS", dia: "Viernes", h: "18-22", a: "5-202", start: 20 },
+        { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Miércoles", h: "20-22", a: "5-104", start: 20 },
+        { d: "LUIS GUILLERMO ZULETA", m: "COMUNICACIONES I", dia: "Viernes", h: "20-22", a: "5-104", start: 20 },
+        { d: "RAMIRO ANTONIO LOPERA", m: "FABRICACIÓN SOSTENIBLE", dia: "Martes", h: "14-16", a: "5-102", start: 14 },
+        { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 12 },
+        { d: "RAUL ALBERTO BEDOYA", m: "MECANIZADO CNC", dia: "Sábado", h: "12-16", a: "5-202", start: 14 },
+        { d: "RAUL ALBERTO BEDOYA", m: "DIBUJO TÉCNICO 2", dia: "Viernes", h: "18-20", a: "5-104", start: 18 },
+        { d: "RUBEN DARIO ECHAVARRIA", m: "ELECTRONICA BASICA", dia: "Sábado", h: "06-08", a: "5-102", start: 6 },
+        { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Martes", h: "18-20", a: "5-105", start: 18 },
+        { d: "SANDRA MILENA ALVAREZ", m: "CONTROL INDUSTRIAL", dia: "Jueves", h: "18-20", a: "5-105", start: 18 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Lunes", h: "06-08", a: "5-202", start: 6 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Martes", h: "18-20", a: "5-202", start: 18 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Miércoles", h: "06-08", a: "5-202", start: 6 },
+        { d: "VESNA SRDANOVIC", m: "CIRCUITOS 2", dia: "Jueves", h: "18-20", a: "5-202", start: 18 },
+        { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Lunes", h: "18-20", a: "5-105", start: 18 },
+        { d: "VICTOR ALFONSO CIFUENTES", m: "CIRCUITOS DIGITALES", dia: "Jueves", h: "12-14", a: "5-102", start: 12 },
+        { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Lunes", h: "18-20", a: "5-104", start: 18 },
+        { d: "SIN DOCENTE", m: "CIR DIGITALES APLICADOS", dia: "Sábado", h: "12-14", a: "5-104", start: 12 }
+    ];
+
     const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
     function initTable() {
@@ -284,7 +309,7 @@ const materiasData = [
 
                 const detail = document.createElement('div');
                 detail.style.marginBottom = "5px";
-                detail.innerHTML = `<b style="color:#3b82f6; font-size:10px">${m.m}</b><br><small>${m.d}</small>`;
+                detail.innerHTML = `<b style="color:#3b82f6; font-size:10px">${m.m}</b><small>${m.d}</small>`;
                 infoHover.appendChild(detail);
             }
         });
