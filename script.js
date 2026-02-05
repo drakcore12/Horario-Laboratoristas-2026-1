@@ -160,11 +160,35 @@ function clearFilters() {
     highlightCurrentSlot();
 }
 
+function toggleFilters() {
+    const section = document.getElementById('filterSection');
+    const btn = document.getElementById('toggleFiltersBtn');
+    section.classList.toggle('collapsed');
+
+    if (section.classList.contains('collapsed')) {
+        btn.innerHTML = '<span>🔍</span> Filtrar Horario';
+    } else {
+        btn.innerHTML = '<span>✕</span> Cerrar Filtros';
+    }
+}
+
 // Initializing the table when the scripts are loaded
 setupFilters();
 initTable();
 createLegend();
-setInterval(highlightCurrentSlot, 60000); // Update highlight every minute
+
+// Use separate intervals for clock and slot highlighting
+setInterval(updateLiveClock, 1000);
+setInterval(highlightCurrentSlot, 30000); // Check slot every 30s
+
+function updateLiveClock() {
+    const now = new Date();
+    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dayString = dayNames[now.getDay()];
+
+    document.getElementById('liveClock').innerText = `${dayString} ${timeString} | Gestión 2026-1`;
+}
 
 function highlightCurrentSlot() {
     // Remove previous highlights
@@ -205,5 +229,6 @@ function createLegend() {
     `).join("");
 }
 
-// Ensure the first highlight happens immediately
+// Ensure the initial updates happen immediately
+updateLiveClock();
 highlightCurrentSlot();

@@ -18,11 +18,15 @@
 
     <div class="container">
         <h1>Horario Electrónica B5</h1>
-        <p class="subtitle">Gestión 2026-1</p>
+        <p class="subtitle" id="liveClock">Cargando hora...</p>
 
         <div class="legend-container" id="legend"></div>
 
-        <div class="filter-section">
+        <button class="filter-toggle-btn" id="toggleFiltersBtn" onclick="toggleFilters()">
+            <span>🔍</span> Filtrar Horario
+        </button>
+
+        <div class="filter-section collapsed" id="filterSection">
             <div class="filter-group">
                 <label for="filterMateria">Materia</label>
                 <select id="filterMateria">
