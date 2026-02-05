@@ -17,7 +17,6 @@ function toggleFilters() {
 function shortM(name) {
     return name
         .replace(/CIRCUITOS/g, "C.")
-        // ... (rest of shortM)
         .replace(/DIGITALES/g, "DIG.")
         .replace(/MICROCONTROLADORES/g, "MICRO.")
         .replace(/APL /g, "A. ")
