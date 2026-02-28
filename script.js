@@ -33,6 +33,7 @@ function shortM(name) {
         .replace(/CONMUTACION/g, "CONMUT.")
         .replace(/SERVOMECANISMOS/g, "SERVO.")
         .replace(/DISEÑO ELEM MAQ/g, "D.E.M.")
+        .replace(/INTRODUCCIÓN/g, "INTRO.")
         .replace(/INTRO /g, "I. ");
 }
 
@@ -68,7 +69,7 @@ function renderLabDots(labString) {
 `;
 }
 
-let currentFilters = { materia: 'all', docente: 'all', lab: 'all' };
+let currentFilters = { materia: ['all'], docente: ['all'], lab: ['all'] };
 
 function initTable() {
     const tbody = document.getElementById('scheduleBody');
@@ -87,13 +88,11 @@ function initTable() {
 
             // Apply lab filter
             let visibleLabs = labString;
-            if (currentFilters.lab !== 'all') {
+            if (!currentFilters.lab.includes('all')) {
                 const labsArray = labString.split("-");
-                if (labsArray.includes(currentFilters.lab)) {
-                    visibleLabs = currentFilters.lab; // Only show the filtered tech
-                } else {
-                    visibleLabs = "---"; // Hide all if not matching
-                }
+                // Filter only labels that ARE in currentFilters.lab
+                const filtered = labsArray.filter(l => currentFilters.lab.includes(l));
+                visibleLabs = filtered.length > 0 ? filtered.join("-") : "---";
             }
 
             infoCells[cellId] = { materias: [], lab: labString, hora: `${h}-${h + 2}`, dia: dia };
@@ -114,8 +113,8 @@ ${renderLabDots(visibleLabs)}
 function renderMaterias() {
     materiasData.forEach(m => {
         // Filter logic
-        const matchesMateria = currentFilters.materia === 'all' || m.m === currentFilters.materia;
-        const matchesDocente = currentFilters.docente === 'all' || m.d === currentFilters.docente;
+        const matchesMateria = currentFilters.materia.includes('all') || currentFilters.materia.includes(m.m);
+        const matchesDocente = currentFilters.docente.includes('all') || currentFilters.docente.includes(m.d);
 
         if (!matchesMateria || !matchesDocente) return;
 
@@ -125,7 +124,7 @@ function renderMaterias() {
         if (container) {
             infoCells[cellId].materias.push(m);
             const block = document.createElement('div');
-            block.className = 'materia-block';
+            block.className = `materia-block materia-${m.c}`;
             block.innerHTML = `<span>${shortM(m.m)}</span><span class="aula-badge">${m.a}</span>`;
             container.appendChild(block);
 
@@ -152,12 +151,49 @@ function setupFilters() {
     uniqueDocentes.forEach(d => selDocente.add(new Option(d, d)));
     uniqueLabs.forEach(l => selLab.add(new Option(l, l)));
 
-    const triggerRebuild = () => {
+    const getSelected = (selectEl) => {
+        const selected = Array.from(selectEl.selectedOptions).map(opt => opt.value);
+        if (selected.length === 0) return ['all'];
+        // If 'all' is selected along with others, 'all' wins or we can filter it out
+        // Let's say if 'all' is selected, we reset others or vice versa.
+        // Simple approach: if 'all' is in the list, just use 'all'.
+        if (selected.includes('all') && selected.length > 1) {
+            // If user clicked something else while 'all' was there, remove 'all'
+            // Unless they specifically clicked 'all' last? 
+            // Better: if 'all' is present, it means "show everything".
+            return ['all'];
+        }
+        return selected;
+    };
+
+    const triggerRebuild = (e) => {
+        const select = e.target;
+        // Logic to handle 'all' vs specific
+        const values = Array.from(select.selectedOptions).map(opt => opt.value);
+
+        // If 'all' was selected and we add more, remove 'all'
+        // If nothing is selected, select 'all'
+        if (values.length > 1 && values.includes('all')) {
+            // If 'all' was already there, and we added more, remove 'all'
+            // But wait, the native behavior is just to add to selection.
+            // Let's force a toggle:
+            // If we just selected 'all', deselect others.
+            // If we selected something else, deselect 'all'.
+
+            // We need to know what was JUST changed.
+        }
+
         currentFilters = {
-            materia: selMateria.value,
-            docente: selDocente.value,
-            lab: selLab.value
+            materia: getSelected(selMateria),
+            docente: getSelected(selDocente),
+            lab: getSelected(selLab)
         };
+
+        // Update selection UI to match our logic (if 'all' is selected, deselect others)
+        if (currentFilters.materia.includes('all')) Array.from(selMateria.options).forEach(opt => opt.selected = (opt.value === 'all'));
+        if (currentFilters.docente.includes('all')) Array.from(selDocente.options).forEach(opt => opt.selected = (opt.value === 'all'));
+        if (currentFilters.lab.includes('all')) Array.from(selLab.options).forEach(opt => opt.selected = (opt.value === 'all'));
+
         initTable();
         highlightCurrentSlot();
     };
@@ -168,10 +204,11 @@ function setupFilters() {
 }
 
 function clearFilters() {
-    document.getElementById('filterMateria').value = 'all';
-    document.getElementById('filterDocente').value = 'all';
-    document.getElementById('filterLab').value = 'all';
-    currentFilters = { materia: 'all', docente: 'all', lab: 'all' };
+    ['filterMateria', 'filterDocente', 'filterLab'].forEach(id => {
+        const sel = document.getElementById(id);
+        Array.from(sel.options).forEach(opt => opt.selected = (opt.value === 'all'));
+    });
+    currentFilters = { materia: ['all'], docente: ['all'], lab: ['all'] };
     initTable();
     highlightCurrentSlot();
 }

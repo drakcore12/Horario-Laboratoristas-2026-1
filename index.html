@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Horario Electrónica 2026-1</title>
-    <link rel="stylesheet" href="styles.css?v=1.3">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -29,23 +29,24 @@
         <div class="filter-section collapsed" id="filterSection">
             <div class="filter-group">
                 <label for="filterMateria">Materia</label>
-                <select id="filterMateria">
-                    <option value="all">Todas</option>
+                <select id="filterMateria" multiple>
+                    <option value="all" selected>Todas</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filterDocente">Profesor</label>
-                <select id="filterDocente">
-                    <option value="all">Todos</option>
+                <select id="filterDocente" multiple>
+                    <option value="all" selected>Todos</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filterLab">Laboratorista</label>
-                <select id="filterLab">
-                    <option value="all">Todos</option>
+                <select id="filterLab" multiple>
+                    <option value="all" selected>Todos</option>
                 </select>
             </div>
             <button class="btn-clear" onclick="clearFilters()">Limpiar</button>
+            <p class="filter-hint">Mantén presionado <b>Ctrl</b> (o Cmd) para seleccionar varios</p>
         </div>
 
         <div class="table-wrapper">
@@ -66,8 +67,8 @@
         </div>
     </div>
 
-    <script src="constants.js?v=1.1"></script>
-    <script src="script.js?v=1.1"></script>
+    <script src="constants.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
