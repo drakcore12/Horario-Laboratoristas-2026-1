@@ -47,10 +47,10 @@ const laboratoristas = {
     6: "Rosario-Miguel",
     8: "Rosario-Miguel-Anderson",
     10: "Rosario-Miguel",
-    12: "Rosario-Anderson-Camilo",
-    14: "Anderson-Camilo-Mateo",
+    12: "Rosario-Anderson-Camilo-Miguel",
+    14: "Anderson-Camilo-Mateo-Miguel",
     16: "Anderson-Camilo",
-    18: "Mateo-Miguel-Anderson",
+    18: "Mateo-Anderson",
     20: "Mateo-Anderson"
   },
 
